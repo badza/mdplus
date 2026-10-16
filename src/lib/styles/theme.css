@@ -1,0 +1,387 @@
+:root {
+  --mdplus-accent: #e8594f;
+  --mdplus-bg: #ffffff;
+  --mdplus-bg-subtle: #fafafa;
+  --mdplus-text: #262626;
+  --mdplus-text-muted: #9a9a9a;
+  --mdplus-border: rgba(0, 0, 0, 0.07);
+  --mdplus-hover: rgba(0, 0, 0, 0.045);
+  --mdplus-active: rgba(0, 0, 0, 0.08);
+
+  /* Chrome surfaces (title bar / toolbar / tab bar / status bar) sit one subtle step
+     apart from the editor background and from each other. The vertical gradient is
+     kept intentionally tiny -- just enough to read as a lit surface rather than a
+     flat fill, without becoming visible as "a gradient". */
+  --mdplus-chrome-bg: linear-gradient(to bottom, #f7f7f7, #f4f4f4);
+  --mdplus-titlebar-bg: linear-gradient(to bottom, #f3f3f3, #f0f0f0);
+
+  --mdplus-tab-indicator: rgba(0, 0, 0, 0.28);
+  --mdplus-scrollbar-thumb: rgba(0, 0, 0, 0.18);
+  --mdplus-scrollbar-thumb-hover: rgba(0, 0, 0, 0.32);
+
+  /* Active tab: a whisper of top-light so the tab reads as gently raised toward
+     the indicator bar, not as a coloured stripe. */
+  --mdplus-tab-active-bg: linear-gradient(to bottom, rgba(255, 255, 255, 0.28), rgba(255, 255, 255, 0.06));
+
+  /* Pill tabs: idle pills are transparent; hover gets a faint raised fill; the
+     active pill gets a solid raised surface (like a button pressed "on") with
+     a hairline border so it reads as a distinct capsule. */
+  --mdplus-pill-hover-bg: var(--mdplus-btn-hover-bg);
+  --mdplus-pill-active-bg: linear-gradient(to bottom, #ffffff, #f6f6f6);
+  --mdplus-pill-active-border: rgba(0, 0, 0, 0.1);
+  --mdplus-pill-active-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+
+  /* Raised buttons / icon chips: a faint top-light gradient reads as a gently
+     raised surface. Hover bumps the sheen; active (pressed) inverts the
+     direction so the surface reads as pressed-in instead of raised. */
+  --mdplus-btn-bg: linear-gradient(to bottom, rgba(255, 255, 255, 0.25), rgba(0, 0, 0, 0.015));
+  --mdplus-btn-hover-bg: linear-gradient(to bottom, rgba(255, 255, 255, 0.32), rgba(0, 0, 0, 0.025));
+  --mdplus-btn-active-bg: linear-gradient(to bottom, rgba(0, 0, 0, 0.03), rgba(0, 0, 0, 0.01));
+
+  /* Selected segment in a segmented control (e.g. the theme picker): a soft
+     inset look so the active segment reads as pressed-in. */
+  --mdplus-segment-active-bg: linear-gradient(to bottom, rgba(0, 0, 0, 0.03), rgba(0, 0, 0, 0.045));
+
+  /* Popover / dialog surfaces: solid base colour with the faintest top-light
+     gradient so dropdowns and modals don't read as flat cards. The header
+     gets a slightly stronger step so it separates from the body. */
+  --mdplus-surface-bg: linear-gradient(to bottom, #ffffff, #fcfcfc);
+  --mdplus-surface-header-bg: linear-gradient(to bottom, #fbfbfb, #f6f6f6);
+
+  /* Syntax highlighting palette. Tuned for markdown -- headings, inline code,
+     links, strings, and comments get distinct hues that stay readable on both
+     light and dark backgrounds. Inspired by VS Code / GitHub conventions:
+     headings in blue, code in warm red, strings in green, comments in muted gray. */
+  --mdplus-syn-heading: #1a5fb4;
+  --mdplus-syn-code: #c0322d;
+  --mdplus-syn-link: #1a6cb4;
+  --mdplus-syn-string: #0b7a3b;
+  --mdplus-syn-comment: #6b7280;
+  --mdplus-syn-keyword: #9c27b0;
+  --mdplus-syn-number: #1a6cb4;
+  --mdplus-syn-punct: #9a9a9a;
+  --mdplus-syn-quote: #6b7280;
+
+  /* Cursor: accent-tinted so it's clearly visible against any background.
+     Slightly wider (2px) than CodeMirror's default (1.2px) for readability. */
+  --mdplus-cursor: #e8594f;
+  /* Opaque, so syntax colors don't tint the highlight a different shade per token. */
+  --mdplus-selection: #d4e4f7;
+  --mdplus-selection-match: rgba(232, 89, 79, 0.28);
+
+  /* Markdown decoration backgrounds (inline code, code blocks, blockquotes,
+     tables) -- a touch darker than the editor background so the structures
+     read as distinct regions without being heavy. */
+  --mdplus-code-bg: rgba(125, 125, 125, 0.12);
+  --mdplus-codeblock-bg: rgba(125, 125, 125, 0.06);
+  --mdplus-blockquote-bg: rgba(125, 125, 125, 0.05);
+  --mdplus-table-bg: rgba(125, 125, 125, 0.04);
+  --mdplus-table-header-bg: rgba(125, 125, 125, 0.08);
+
+  /* Editor surface + window frame. The editor fills the window edge-to-edge;
+     --mdplus-card-bg is the editor surface, --mdplus-card-frame is the app
+     background (visible behind the floating tab bar and the status bar). */
+  --mdplus-card-bg: #ffffff;
+  --mdplus-card-frame: #f0f0f0;
+}
+
+:root[data-theme="dark"] {
+  --mdplus-accent: #ff7a6e;
+  --mdplus-bg: #1c1c1c;
+  --mdplus-bg-subtle: #1a1a1a;
+  --mdplus-text: #e6e6e6;
+  --mdplus-text-muted: #8c8c8c;
+  --mdplus-border: rgba(255, 255, 255, 0.08);
+  --mdplus-hover: rgba(255, 255, 255, 0.055);
+  --mdplus-active: rgba(255, 255, 255, 0.09);
+
+  --mdplus-chrome-bg: linear-gradient(to bottom, #242424, #212121);
+  --mdplus-titlebar-bg: linear-gradient(to bottom, #2a2a2a, #272727);
+
+  --mdplus-tab-indicator: rgba(255, 255, 255, 0.32);
+  --mdplus-scrollbar-thumb: rgba(255, 255, 255, 0.18);
+  --mdplus-scrollbar-thumb-hover: rgba(255, 255, 255, 0.32);
+
+  --mdplus-tab-active-bg: linear-gradient(to bottom, rgba(255, 255, 255, 0.035), rgba(255, 255, 255, 0.01));
+
+  --mdplus-pill-hover-bg: var(--mdplus-btn-hover-bg);
+  --mdplus-pill-active-bg: linear-gradient(to bottom, #2a2a2a, #242424);
+  --mdplus-pill-active-border: rgba(255, 255, 255, 0.1);
+  --mdplus-pill-active-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+
+  --mdplus-btn-bg: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), rgba(0, 0, 0, 0.06));
+  --mdplus-btn-hover-bg: linear-gradient(to bottom, rgba(255, 255, 255, 0.045), rgba(0, 0, 0, 0.03));
+  --mdplus-btn-active-bg: linear-gradient(to bottom, rgba(0, 0, 0, 0.09), rgba(0, 0, 0, 0.05));
+
+  --mdplus-segment-active-bg: linear-gradient(to bottom, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.02));
+
+  --mdplus-surface-bg: linear-gradient(to bottom, #1c1c1c, #1a1a1a);
+  --mdplus-surface-header-bg: linear-gradient(to bottom, #1e1e1e, #1b1b1b);
+
+  --mdplus-syn-heading: #5aa3e8;
+  --mdplus-syn-code: #ff7a6e;
+  --mdplus-syn-link: #4ea6e8;
+  --mdplus-syn-string: #4ebc7d;
+  --mdplus-syn-comment: #7d8794;
+  --mdplus-syn-keyword: #c97ce0;
+  --mdplus-syn-number: #4ea6e8;
+  --mdplus-syn-punct: #8c8c8c;
+  --mdplus-syn-quote: #8c8c8c;
+
+  --mdplus-cursor: #ff7a6e;
+  /* Neutral, not blue: headings and links are already blue, so a blue
+     selection hides them. Lighter than the editor surface so the band reads. */
+  --mdplus-selection: #3e444c;
+  --mdplus-selection-match: rgba(255, 122, 110, 0.34);
+
+  --mdplus-code-bg: rgba(255, 255, 255, 0.08);
+  --mdplus-codeblock-bg: rgba(255, 255, 255, 0.04);
+  --mdplus-blockquote-bg: rgba(255, 255, 255, 0.03);
+  --mdplus-table-bg: rgba(255, 255, 255, 0.025);
+  --mdplus-table-header-bg: rgba(255, 255, 255, 0.05);
+
+  --mdplus-card-bg: #1e1e1e;
+  --mdplus-card-frame: #161616;
+}
+
+/* Paper: a warm notebook. Ink is brown, the accent stays in the coral family. */
+:root[data-theme="paper"] {
+  --mdplus-accent: #c4553a;
+  --mdplus-bg: #f6f1e7;
+  --mdplus-bg-subtle: #f3ecdf;
+  --mdplus-text: #3c332b;
+  --mdplus-text-muted: #8d7d6c;
+  --mdplus-border: rgba(60, 40, 20, 0.1);
+  --mdplus-hover: rgba(60, 40, 20, 0.045);
+  --mdplus-active: rgba(60, 40, 20, 0.08);
+  --mdplus-chrome-bg: linear-gradient(to bottom, #efe6d6, #ebe2d0);
+  --mdplus-titlebar-bg: linear-gradient(to bottom, #e9dfcc, #e4d9c4);
+  --mdplus-tab-indicator: rgba(60, 40, 20, 0.28);
+  --mdplus-scrollbar-thumb: rgba(60, 40, 20, 0.18);
+  --mdplus-scrollbar-thumb-hover: rgba(60, 40, 20, 0.32);
+  --mdplus-tab-active-bg: linear-gradient(to bottom, rgba(255, 250, 243, 0.4), rgba(255, 250, 243, 0.08));
+  --mdplus-pill-hover-bg: var(--mdplus-btn-hover-bg);
+  --mdplus-pill-active-bg: linear-gradient(to bottom, #fffaf3, #f6efe4);
+  --mdplus-pill-active-border: rgba(60, 40, 20, 0.12);
+  --mdplus-pill-active-shadow: 0 1px 2px rgba(60, 40, 20, 0.05);
+  --mdplus-btn-bg: linear-gradient(to bottom, rgba(255, 250, 243, 0.35), rgba(60, 40, 20, 0.02));
+  --mdplus-btn-hover-bg: linear-gradient(to bottom, rgba(255, 250, 243, 0.5), rgba(60, 40, 20, 0.03));
+  --mdplus-btn-active-bg: linear-gradient(to bottom, rgba(60, 40, 20, 0.04), rgba(60, 40, 20, 0.015));
+  --mdplus-segment-active-bg: linear-gradient(to bottom, rgba(60, 40, 20, 0.03), rgba(60, 40, 20, 0.05));
+  --mdplus-surface-bg: linear-gradient(to bottom, #fffaf3, #fbf6ee);
+  --mdplus-surface-header-bg: linear-gradient(to bottom, #f8f1e6, #f3ebdf);
+  --mdplus-syn-heading: #8a4e32;
+  --mdplus-syn-code: #a33d32;
+  --mdplus-syn-link: #8a5a32;
+  --mdplus-syn-string: #3d6b48;
+  --mdplus-syn-comment: #8d7d6c;
+  --mdplus-syn-keyword: #7a5470;
+  --mdplus-syn-number: #8a5a32;
+  --mdplus-syn-punct: #a89888;
+  --mdplus-syn-quote: #8d7d6c;
+  --mdplus-cursor: #c4553a;
+  --mdplus-selection: #e6d3bc;
+  --mdplus-selection-match: rgba(196, 85, 58, 0.28);
+  --mdplus-code-bg: rgba(90, 60, 30, 0.1);
+  --mdplus-codeblock-bg: rgba(90, 60, 30, 0.05);
+  --mdplus-blockquote-bg: rgba(90, 60, 30, 0.05);
+  --mdplus-table-bg: rgba(90, 60, 30, 0.04);
+  --mdplus-table-header-bg: rgba(90, 60, 30, 0.08);
+  --mdplus-card-bg: #fbf7f0;
+  --mdplus-card-frame: #efe6d6;
+}
+
+/* Fog: cool daylight. The accent leaves coral for a slate teal. */
+:root[data-theme="fog"] {
+  --mdplus-accent: #3e7384;
+  --mdplus-bg: #f3f5f7;
+  --mdplus-bg-subtle: #eef1f4;
+  --mdplus-text: #2c343c;
+  --mdplus-text-muted: #7b868f;
+  --mdplus-border: rgba(30, 40, 50, 0.1);
+  --mdplus-hover: rgba(30, 40, 50, 0.045);
+  --mdplus-active: rgba(30, 40, 50, 0.08);
+  --mdplus-chrome-bg: linear-gradient(to bottom, #e7ebef, #e3e8ed);
+  --mdplus-titlebar-bg: linear-gradient(to bottom, #e2e7ec, #dde3e8);
+  --mdplus-tab-indicator: rgba(30, 40, 50, 0.28);
+  --mdplus-scrollbar-thumb: rgba(30, 40, 50, 0.18);
+  --mdplus-scrollbar-thumb-hover: rgba(30, 40, 50, 0.32);
+  --mdplus-tab-active-bg: linear-gradient(to bottom, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.08));
+  --mdplus-pill-hover-bg: var(--mdplus-btn-hover-bg);
+  --mdplus-pill-active-bg: linear-gradient(to bottom, #ffffff, #f4f7f9);
+  --mdplus-pill-active-border: rgba(30, 40, 50, 0.12);
+  --mdplus-pill-active-shadow: 0 1px 2px rgba(30, 40, 50, 0.05);
+  --mdplus-btn-bg: linear-gradient(to bottom, rgba(255, 255, 255, 0.35), rgba(30, 40, 50, 0.02));
+  --mdplus-btn-hover-bg: linear-gradient(to bottom, rgba(255, 255, 255, 0.5), rgba(30, 40, 50, 0.03));
+  --mdplus-btn-active-bg: linear-gradient(to bottom, rgba(30, 40, 50, 0.04), rgba(30, 40, 50, 0.015));
+  --mdplus-segment-active-bg: linear-gradient(to bottom, rgba(30, 40, 50, 0.03), rgba(30, 40, 50, 0.05));
+  --mdplus-surface-bg: linear-gradient(to bottom, #ffffff, #f7f9fb);
+  --mdplus-surface-header-bg: linear-gradient(to bottom, #f7f9fb, #eef2f5);
+  --mdplus-syn-heading: #2c5f78;
+  --mdplus-syn-code: #8d4d4a;
+  --mdplus-syn-link: #2f6480;
+  --mdplus-syn-string: #2f6b52;
+  --mdplus-syn-comment: #7b868f;
+  --mdplus-syn-keyword: #655a86;
+  --mdplus-syn-number: #2f6480;
+  --mdplus-syn-punct: #8b97a1;
+  --mdplus-syn-quote: #7b868f;
+  --mdplus-cursor: #3e7384;
+  --mdplus-selection: #d3e0e8;
+  --mdplus-selection-match: rgba(62, 115, 132, 0.28);
+  --mdplus-code-bg: rgba(40, 60, 70, 0.1);
+  --mdplus-codeblock-bg: rgba(40, 60, 70, 0.05);
+  --mdplus-blockquote-bg: rgba(40, 60, 70, 0.05);
+  --mdplus-table-bg: rgba(40, 60, 70, 0.04);
+  --mdplus-table-header-bg: rgba(40, 60, 70, 0.08);
+  --mdplus-card-bg: #f7f9fb;
+  --mdplus-card-frame: #e6ebf0;
+}
+
+/* Ink: a blue night. Selection stays a gray-blue so links still read. */
+:root[data-theme="ink"] {
+  --mdplus-accent: #8eb8d8;
+  --mdplus-bg: #151a21;
+  --mdplus-bg-subtle: #12171d;
+  --mdplus-text: #d5dee8;
+  --mdplus-text-muted: #8090a0;
+  --mdplus-border: rgba(255, 255, 255, 0.08);
+  --mdplus-hover: rgba(255, 255, 255, 0.055);
+  --mdplus-active: rgba(255, 255, 255, 0.09);
+  --mdplus-chrome-bg: linear-gradient(to bottom, #1c232c, #191f27);
+  --mdplus-titlebar-bg: linear-gradient(to bottom, #222a34, #1e2630);
+  --mdplus-tab-indicator: rgba(255, 255, 255, 0.32);
+  --mdplus-scrollbar-thumb: rgba(255, 255, 255, 0.18);
+  --mdplus-scrollbar-thumb-hover: rgba(255, 255, 255, 0.32);
+  --mdplus-tab-active-bg: linear-gradient(to bottom, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.012));
+  --mdplus-pill-hover-bg: var(--mdplus-btn-hover-bg);
+  --mdplus-pill-active-bg: linear-gradient(to bottom, #242c36, #1e2630);
+  --mdplus-pill-active-border: rgba(255, 255, 255, 0.1);
+  --mdplus-pill-active-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+  --mdplus-btn-bg: linear-gradient(to bottom, rgba(255, 255, 255, 0.035), rgba(0, 0, 0, 0.08));
+  --mdplus-btn-hover-bg: linear-gradient(to bottom, rgba(255, 255, 255, 0.05), rgba(0, 0, 0, 0.04));
+  --mdplus-btn-active-bg: linear-gradient(to bottom, rgba(0, 0, 0, 0.12), rgba(0, 0, 0, 0.06));
+  --mdplus-segment-active-bg: linear-gradient(to bottom, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0.02));
+  --mdplus-surface-bg: linear-gradient(to bottom, #1b222b, #171e26);
+  --mdplus-surface-header-bg: linear-gradient(to bottom, #1e2630, #1a212a);
+  --mdplus-syn-heading: #a9cbe6;
+  --mdplus-syn-code: #e0a898;
+  --mdplus-syn-link: #9ec4e4;
+  --mdplus-syn-string: #8fbfa8;
+  --mdplus-syn-comment: #8090a0;
+  --mdplus-syn-keyword: #c2b0dc;
+  --mdplus-syn-number: #9ec4e4;
+  --mdplus-syn-punct: #8090a0;
+  --mdplus-syn-quote: #93a0ae;
+  --mdplus-cursor: #8eb8d8;
+  --mdplus-selection: #2e3b4a;
+  --mdplus-selection-match: rgba(142, 184, 216, 0.32);
+  --mdplus-code-bg: rgba(255, 255, 255, 0.08);
+  --mdplus-codeblock-bg: rgba(255, 255, 255, 0.04);
+  --mdplus-blockquote-bg: rgba(255, 255, 255, 0.03);
+  --mdplus-table-bg: rgba(255, 255, 255, 0.025);
+  --mdplus-table-header-bg: rgba(255, 255, 255, 0.05);
+  --mdplus-card-bg: #1a212a;
+  --mdplus-card-frame: #10151b;
+}
+
+/* Moss: a deep green room, with a warm accent so it is not all one hue. */
+:root[data-theme="moss"] {
+  --mdplus-accent: #d09268;
+  --mdplus-bg: #171e1a;
+  --mdplus-bg-subtle: #141b17;
+  --mdplus-text: #d7e2d8;
+  --mdplus-text-muted: #849688;
+  --mdplus-border: rgba(255, 255, 255, 0.08);
+  --mdplus-hover: rgba(255, 255, 255, 0.055);
+  --mdplus-active: rgba(255, 255, 255, 0.09);
+  --mdplus-chrome-bg: linear-gradient(to bottom, #1e2822, #1b2420);
+  --mdplus-titlebar-bg: linear-gradient(to bottom, #24302a, #202b25);
+  --mdplus-tab-indicator: rgba(255, 255, 255, 0.32);
+  --mdplus-scrollbar-thumb: rgba(255, 255, 255, 0.18);
+  --mdplus-scrollbar-thumb-hover: rgba(255, 255, 255, 0.32);
+  --mdplus-tab-active-bg: linear-gradient(to bottom, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.012));
+  --mdplus-pill-hover-bg: var(--mdplus-btn-hover-bg);
+  --mdplus-pill-active-bg: linear-gradient(to bottom, #26302a, #202924);
+  --mdplus-pill-active-border: rgba(255, 255, 255, 0.1);
+  --mdplus-pill-active-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+  --mdplus-btn-bg: linear-gradient(to bottom, rgba(255, 255, 255, 0.035), rgba(0, 0, 0, 0.08));
+  --mdplus-btn-hover-bg: linear-gradient(to bottom, rgba(255, 255, 255, 0.05), rgba(0, 0, 0, 0.04));
+  --mdplus-btn-active-bg: linear-gradient(to bottom, rgba(0, 0, 0, 0.12), rgba(0, 0, 0, 0.06));
+  --mdplus-segment-active-bg: linear-gradient(to bottom, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0.02));
+  --mdplus-surface-bg: linear-gradient(to bottom, #1c2520, #18201c);
+  --mdplus-surface-header-bg: linear-gradient(to bottom, #202a24, #1c2520);
+  --mdplus-syn-heading: #c5d4b0;
+  --mdplus-syn-code: #e0aa98;
+  --mdplus-syn-link: #d2c09a;
+  --mdplus-syn-string: #8fbf9a;
+  --mdplus-syn-comment: #849688;
+  --mdplus-syn-keyword: #c2b0c8;
+  --mdplus-syn-number: #d2c09a;
+  --mdplus-syn-punct: #849688;
+  --mdplus-syn-quote: #93a498;
+  --mdplus-cursor: #d09268;
+  --mdplus-selection: #323c35;
+  --mdplus-selection-match: rgba(208, 146, 104, 0.34);
+  --mdplus-code-bg: rgba(255, 255, 255, 0.08);
+  --mdplus-codeblock-bg: rgba(255, 255, 255, 0.04);
+  --mdplus-blockquote-bg: rgba(255, 255, 255, 0.03);
+  --mdplus-table-bg: rgba(255, 255, 255, 0.025);
+  --mdplus-table-header-bg: rgba(255, 255, 255, 0.05);
+  --mdplus-card-bg: #1c2520;
+  --mdplus-card-frame: #101613;
+}
+
+/* Dusk: warm charcoal, like a room after sunset. */
+:root[data-theme="dusk"] {
+  --mdplus-accent: #e09278;
+  --mdplus-bg: #211b18;
+  --mdplus-bg-subtle: #1d1815;
+  --mdplus-text: #f0e6dc;
+  --mdplus-text-muted: #a89286;
+  --mdplus-border: rgba(255, 255, 255, 0.08);
+  --mdplus-hover: rgba(255, 255, 255, 0.055);
+  --mdplus-active: rgba(255, 255, 255, 0.09);
+  --mdplus-chrome-bg: linear-gradient(to bottom, #2a221e, #261f1b);
+  --mdplus-titlebar-bg: linear-gradient(to bottom, #312822, #2c241f);
+  --mdplus-tab-indicator: rgba(255, 255, 255, 0.32);
+  --mdplus-scrollbar-thumb: rgba(255, 255, 255, 0.18);
+  --mdplus-scrollbar-thumb-hover: rgba(255, 255, 255, 0.32);
+  --mdplus-tab-active-bg: linear-gradient(to bottom, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.012));
+  --mdplus-pill-hover-bg: var(--mdplus-btn-hover-bg);
+  --mdplus-pill-active-bg: linear-gradient(to bottom, #332a25, #2c241f);
+  --mdplus-pill-active-border: rgba(255, 255, 255, 0.1);
+  --mdplus-pill-active-shadow: 0 1px 2px rgba(0, 0, 0, 0.28);
+  --mdplus-btn-bg: linear-gradient(to bottom, rgba(255, 255, 255, 0.035), rgba(0, 0, 0, 0.1));
+  --mdplus-btn-hover-bg: linear-gradient(to bottom, rgba(255, 255, 255, 0.05), rgba(0, 0, 0, 0.05));
+  --mdplus-btn-active-bg: linear-gradient(to bottom, rgba(0, 0, 0, 0.14), rgba(0, 0, 0, 0.07));
+  --mdplus-segment-active-bg: linear-gradient(to bottom, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0.02));
+  --mdplus-surface-bg: linear-gradient(to bottom, #2a221e, #241e1a);
+  --mdplus-surface-header-bg: linear-gradient(to bottom, #2e2621, #281f1b);
+  --mdplus-syn-heading: #e4c09a;
+  --mdplus-syn-code: #e09890;
+  --mdplus-syn-link: #e4c09a;
+  --mdplus-syn-string: #a8c8a0;
+  --mdplus-syn-comment: #a89286;
+  --mdplus-syn-keyword: #d0b0c4;
+  --mdplus-syn-number: #e4c09a;
+  --mdplus-syn-punct: #a89286;
+  --mdplus-syn-quote: #b09a90;
+  --mdplus-cursor: #e09278;
+  --mdplus-selection: #433830;
+  --mdplus-selection-match: rgba(224, 146, 120, 0.34);
+  --mdplus-code-bg: rgba(255, 255, 255, 0.08);
+  --mdplus-codeblock-bg: rgba(255, 255, 255, 0.04);
+  --mdplus-blockquote-bg: rgba(255, 255, 255, 0.03);
+  --mdplus-table-bg: rgba(255, 255, 255, 0.025);
+  --mdplus-table-header-bg: rgba(255, 255, 255, 0.05);
+  --mdplus-card-bg: #261f1b;
+  --mdplus-card-frame: #16110f;
+}
+
+/* Native selection (status bar, welcome title, preview). Without this, WebKit
+   uses the system blue and paints the letters in a clashing color. */
+::selection {
+  background-color: var(--mdplus-selection);
+  color: var(--mdplus-text);
+}

@@ -1,0 +1,33 @@
+html,
+body {
+  margin: 0;
+  height: 100%;
+}
+
+body {
+  background: var(--mdplus-bg);
+  color: var(--mdplus-text);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+  /* Chrome follows the pointer. A drag across tabs, labels, or the status
+     bar must not start a selection the way a web page would. */
+  cursor: default;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* The note, the rendered page, and fields you type into stay selectable.
+   WKWebView keeps an ancestor's none unless the editable node opts back in. */
+.cm-content,
+textarea,
+[contenteditable="true"],
+input:not([type="checkbox"]):not([type="radio"]):not([type="button"]):not([type="submit"]):not([type="reset"]):not([type="file"]):not([type="range"]):not([type="color"]) {
+  cursor: text;
+  user-select: text;
+  -webkit-user-select: text;
+}
+
+.preview-article {
+  cursor: auto;
+  user-select: text;
+  -webkit-user-select: text;
+}

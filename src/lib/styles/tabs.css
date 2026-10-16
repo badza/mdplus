@@ -1,0 +1,419 @@
+.tab-bar {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  height: 36px;
+  padding: 0 10px 0 10px;
+  background: transparent;
+  position: relative;
+  user-select: none;
+}
+
+.tabs-track {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  height: 100%;
+  min-width: 0;
+  flex: 1 1 auto;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+  padding: 0 2px;
+}
+
+.tabs-track::-webkit-scrollbar {
+  display: none;
+}
+
+.new-tab {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  align-self: center;
+  border: none;
+  background: transparent;
+  width: 26px;
+  height: 26px;
+  margin-left: 4px;
+  border-radius: 7px;
+  cursor: pointer;
+  color: var(--mdplus-text-muted);
+  flex-shrink: 0;
+  transition: background 0.12s ease, color 0.12s ease;
+}
+
+.new-tab:hover {
+  background: var(--mdplus-btn-hover-bg);
+  color: var(--mdplus-text);
+}
+
+/* Pill tabs: rounded capsules with horizontal padding, sitting in a track with
+   a little vertical breathing room. Active pills get a solid raised surface
+   (background + border + shadow) so they read as "pressed on", like a segmented
+   control -- inspired by opencode desktop's tab pills. Inactive pills are
+   transparent and only show a faint hover fill. */
+.tab {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  height: 26px;
+  padding: 0 9px;
+  margin: 0;
+  border: 1px solid transparent;
+  border-radius: 7px;
+  background: transparent;
+  cursor: pointer;
+  white-space: nowrap;
+  color: var(--mdplus-text-muted);
+  position: relative;
+  width: 100%;
+  transition: color 0.12s ease, background 0.12s ease, border-color 0.12s ease, box-shadow 0.12s ease;
+}
+
+/* Tab sizing: flex to content (so a 10-char "Untitled-2" never ellipsizes while
+   there's free space in the tab bar), but cap at a max width so an absurdly long
+   filename still shrinks and ellipsizes. min-width is just enough to keep the icon
+   + close button usable when the bar is full and tabs must shrink; short names
+   stay well above this floor and so never ellipize while there's free space.
+   The previous 130px fixed basis was ellipsizing 10-char names into 11-char
+   ellipsized strings with ~900px of empty bar to the right. */
+.tab-wrap {
+  flex: 0 1 auto;
+  min-width: 96px;
+  max-width: 200px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+/* Subtle divider between inactive, non-hovered tabs. Hidden on the last tab,
+   and on any tab that is active or hovered (so it never touches a live pill).
+   Opacity (not visibility/display) is used so the divider can fade in/out
+   calmly on hover without layout shift. */
+.tab-wrap:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  right: -2px;
+  top: 50%;
+  margin-top: -6px;
+  width: 1px;
+  height: 12px;
+  background: var(--mdplus-border);
+  opacity: 1;
+  pointer-events: none;
+  transition: opacity 0.18s ease;
+}
+
+.tab-wrap:has(.tab.active)::after,
+.tab-wrap:has(.tab:hover)::after,
+/* A divider sits at the *right* edge of its own .tab-wrap, so the divider
+   touching an active/hovered tab's *left* edge belongs to the previous
+   sibling. CSS has no previous-sibling selector, but :has() lets a tab
+   look ahead and hide its own divider when its next sibling is live. */
+.tab-wrap:has(+ .tab-wrap .tab.active)::after,
+.tab-wrap:has(+ .tab-wrap .tab:hover)::after {
+  opacity: 0;
+}
+
+.tab:hover {
+  color: var(--mdplus-text);
+  background: var(--mdplus-pill-hover-bg);
+}
+
+.tab.active {
+  color: var(--mdplus-text);
+  background: var(--mdplus-pill-active-bg);
+  border-color: var(--mdplus-pill-active-border);
+  box-shadow: var(--mdplus-pill-active-shadow);
+}
+
+.tab.deleted {
+  opacity: 0.5;
+}
+
+.tab-icon {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  opacity: 0.7;
+}
+
+.tab-title {
+  flex: 1 1 auto;
+  font-size: 13px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+
+.tab-end {
+  position: relative;
+  width: 14px;
+  height: 14px;
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.tab-item {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.dirty-dot {
+  position: absolute;
+  top: 1px;
+  right: -2px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--mdplus-accent);
+  border: 1.5px solid var(--mdplus-card-bg);
+  box-sizing: content-box;
+  margin: -1.5px;
+  z-index: 3;
+  pointer-events: none;
+  box-shadow: 0 0 0 0.5px var(--mdplus-border);
+}
+
+.tab-close {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 5px;
+  opacity: 0;
+  transition: opacity 0.1s ease, background 0.1s ease;
+}
+
+.tab:hover .tab-close {
+  opacity: 0.7;
+}
+
+.tab.active .tab-close {
+  opacity: 0.55;
+}
+
+.tab-overflow {
+  position: relative;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding-left: 2px;
+}
+
+.scroll-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  align-self: center;
+  border: none;
+  background: transparent;
+  width: 26px;
+  height: 26px;
+  border-radius: 7px;
+  cursor: pointer;
+  color: var(--mdplus-text-muted);
+  flex-shrink: 0;
+  opacity: 0.35;
+  transition: background 0.12s ease, color 0.12s ease, opacity 0.12s ease;
+}
+
+.scroll-btn.enabled {
+  opacity: 1;
+}
+
+.scroll-btn.enabled:hover {
+  background: var(--mdplus-btn-hover-bg);
+  color: var(--mdplus-text);
+}
+
+.scroll-btn:disabled {
+  cursor: default;
+}
+
+.overflow-divider {
+  width: 1px;
+  align-self: center;
+  height: 16px;
+  margin: 0 2px;
+  background: var(--mdplus-border);
+  flex-shrink: 0;
+}
+
+.overflow-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  align-self: center;
+  border: none;
+  background: transparent;
+  width: 26px;
+  height: 26px;
+  margin-left: 2px;
+  border-radius: 7px;
+  cursor: pointer;
+  color: var(--mdplus-text-muted);
+  flex-shrink: 0;
+  transition: background 0.12s ease, color 0.12s ease;
+}
+
+.overflow-btn:hover,
+.overflow-btn.active {
+  background: var(--mdplus-btn-hover-bg);
+  color: var(--mdplus-text);
+}
+
+.tab-menu {
+  position: absolute;
+  top: calc(100% + 4px);
+  right: 0;
+  min-width: 220px;
+  max-width: 340px;
+  max-height: 60vh;
+  display: flex;
+  padding: 4px;
+  background: var(--mdplus-surface-bg);
+  border: 1px solid var(--mdplus-border);
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+  z-index: 50;
+}
+
+.tab-menu-scroll {
+  flex: 1 1 auto;
+  min-width: 0;
+  max-height: calc(60vh - 8px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: none;
+  padding-right: 2px;
+}
+
+.tab-menu-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.tab-menu-scrollbar {
+  position: relative;
+  flex: 0 0 8px;
+  width: 8px;
+  margin: 4px 2px 4px 0;
+  border-radius: 8px;
+  pointer-events: auto;
+  transition: flex 0.15s ease, opacity 0.15s ease;
+}
+
+.tab-menu-scrollbar.hidden {
+  flex: 0 0 0;
+  width: 0;
+  margin: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.tab-menu-scrollbar-thumb {
+  position: absolute;
+  left: 0;
+  right: 0;
+  border-radius: 8px;
+  background: var(--mdplus-scrollbar-thumb);
+  opacity: 0;
+  transition: opacity 0.2s ease, background-color 0.12s ease;
+}
+
+.tab-menu-scrollbar-thumb:hover {
+  background: var(--mdplus-scrollbar-thumb-hover);
+}
+
+.tab-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 6px 10px;
+  border: none;
+  background: transparent;
+  border-radius: 5px;
+  font-size: 13px;
+  color: var(--mdplus-text);
+  cursor: pointer;
+  text-align: left;
+}
+
+.tab-menu-item:hover {
+  background: var(--mdplus-hover);
+}
+
+.tab-menu-item.active {
+  background: var(--mdplus-active);
+  font-weight: 500;
+}
+
+.tab-menu-item.deleted {
+  opacity: 0.5;
+}
+
+.tab-menu-title {
+  flex: 1 1 auto;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+}
+
+.tab-menu-item .dirty-dot {
+  flex-shrink: 0;
+}
+
+.tab-close:hover {
+  background: var(--mdplus-btn-active-bg);
+}
+
+.tab-context-menu {
+  position: fixed;
+  min-width: 200px;
+  max-width: 320px;
+  padding: 4px;
+  background: var(--mdplus-surface-bg);
+  border: 1px solid var(--mdplus-border);
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+  z-index: 70;
+  display: flex;
+  flex-direction: column;
+}
+
+.context-item {
+  width: 100%;
+  padding: 6px 10px;
+  border: none;
+  background: transparent;
+  border-radius: 5px;
+  font-size: 13px;
+  color: var(--mdplus-text);
+  cursor: pointer;
+  text-align: left;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.context-item:hover {
+  background: var(--mdplus-hover);
+}
+
+.context-separator {
+  height: 1px;
+  margin: 4px 6px;
+  background: var(--mdplus-border);
+}

@@ -1,0 +1,511 @@
+.workspace {
+  flex: 1;
+  min-height: 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: row;
+}
+
+.editor-column {
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.workspace.is-preview .editor-column {
+  display: none;
+}
+
+.workspace.is-split .editor-column {
+  flex: var(--split-editor, 0.5) 1 0;
+  min-width: 160px;
+}
+
+.split-rule {
+  flex: 0 0 1px;
+  position: relative;
+  background: var(--mdplus-border);
+  cursor: col-resize;
+  touch-action: none;
+}
+
+.split-rule::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -4px;
+  right: -4px;
+}
+
+.split-rule:hover {
+  background: var(--mdplus-tab-indicator);
+}
+
+.editor-wrapper {
+  flex: 1;
+  min-height: 0;
+  position: relative;
+  /* The CodeMirror scroller is the only scrollport. A second one here
+     steals the wheel gesture in split view and makes the flick feel stuck. */
+  overflow: hidden;
+}
+
+.editor-pane {
+  height: 100%;
+}
+
+/* WKWebView (macOS Tauri) draws the native vertical scrollbar as an OS-level overlay
+   whenever "Show scroll bars" is set to its default (automatic) mode, and in that mode it
+   ignores ::-webkit-scrollbar CSS entirely -- not just color, ANY styling, including
+   display:none. The only rendering-engine-agnostic way to actually get rid of it is pure
+   geometric clipping: cm-scroller is rendered wider than its visible box (past cm-editor's
+   overflow:hidden edge), so wherever the native scrollbar paints itself -- at cm-scroller's
+   own right edge -- lands outside the clip and is never seen. cm-content gets the same
+   amount back as right padding so wrapped text still respects the real visible width
+   instead of flowing into the clipped strip. The custom themed thumb in customScrollbar.ts
+   replaces it, positioned relative to cm-editor (which keeps its original, unclipped size). */
+.editor-pane .cm-editor {
+  height: 100%;
+  overflow: hidden;
+  font-size: var(--mdplus-editor-font-size, 15px);
+}
+
+.editor-pane .cm-scroller {
+  width: calc(100% + 20px);
+  font-family: var(--mdplus-editor-font-family, ui-monospace, "SF Mono", Menlo, Consolas, monospace);
+  line-height: 1.65;
+  overscroll-behavior: contain;
+  /* A diagram that finishes drawing must not drag the viewport with it. */
+  overflow-anchor: none;
+}
+
+.editor-pane .cm-content {
+  padding-right: 20px;
+}
+
+/* Write, with Focus on, uses the same column as Read. The pane clips 20px
+   for the scrollbar, and 68ch is the preview article width. Side clicks
+   stay inside the content box, so the padding lives here. */
+.workspace.is-focus .editor-pane .cm-editor .cm-content {
+  padding-top: 32px;
+  padding-bottom: 80px;
+  padding-left: max(48px, calc((100% - 20px - 68ch) / 2));
+  padding-right: max(68px, calc((100% - 20px - 68ch) / 2 + 20px));
+}
+
+.doc-empty-hint {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  color: var(--mdplus-text-muted);
+  opacity: 0.55;
+  text-align: center;
+  pointer-events: none;
+}
+
+.doc-empty-hint :global(.icon) {
+  opacity: 0.5;
+}
+
+.doc-empty-title {
+  margin: 4px 0 0 0;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--mdplus-text);
+}
+
+.doc-empty-sub {
+  margin: 0;
+  font-size: 12.5px;
+  color: var(--mdplus-text-muted);
+}
+
+/* CodeMirror's default active-line highlight is a solid, full-width bar -- reads as a
+   stray toolbar rather than a cursor cue. Tone it down to the same quiet level as our
+   other hover/press backgrounds instead of turning it off (it still helps orient the eye
+   in a long document). */
+.editor-pane .cm-activeLine {
+  background-color: var(--mdplus-hover) !important;
+}
+
+/* --- Syntax highlighting token classes ---------------------------------
+   Driven by the custom HighlightStyle in highlightTheme.ts, which maps Lezer
+   tags to these class names. Colours are CSS variables from theme.css, so they
+   adapt to light/dark automatically. See theme.css for the full palette. */
+
+.editor-pane .tok-heading1 { color: var(--mdplus-syn-heading); font-weight: 700; }
+.editor-pane .tok-heading2 { color: var(--mdplus-syn-heading); font-weight: 700; }
+.editor-pane .tok-heading3 { color: var(--mdplus-syn-heading); font-weight: 700; }
+.editor-pane .tok-heading4 { color: var(--mdplus-syn-heading); font-weight: 700; }
+
+.editor-pane .tok-emphasis { font-style: italic; }
+.editor-pane .tok-strong { font-weight: 700; }
+.editor-pane .tok-strikethrough { text-decoration: line-through; }
+
+.editor-pane .tok-link { color: var(--mdplus-syn-link); text-decoration: underline; text-decoration-color: color-mix(in srgb, var(--mdplus-syn-link) 40%, transparent); }
+.editor-pane .tok-url { color: var(--mdplus-syn-link); }
+
+.editor-pane .tok-code { color: var(--mdplus-syn-code); }
+
+.editor-pane .tok-string { color: var(--mdplus-syn-string); }
+.editor-pane .tok-number { color: var(--mdplus-syn-number); }
+.editor-pane .tok-atom { color: var(--mdplus-syn-number); }
+
+.editor-pane .tok-keyword { color: var(--mdplus-syn-keyword); }
+
+.editor-pane .tok-variable { color: var(--mdplus-text); }
+.editor-pane .tok-type { color: var(--mdplus-syn-number); }
+.editor-pane .tok-class { color: var(--mdplus-syn-heading); }
+.editor-pane .tok-property { color: var(--mdplus-text); }
+
+.editor-pane .tok-comment { color: var(--mdplus-syn-comment); font-style: italic; }
+
+.editor-pane .tok-escape { color: var(--mdplus-syn-code); }
+
+/* Markdown formatting marks (#, *, `, [, ], etc.) -- muted so the syntax
+   recedes behind the content. */
+.editor-pane .tok-punct { color: var(--mdplus-syn-punct); }
+
+.editor-pane .tok-label { color: var(--mdplus-syn-link); }
+
+.editor-pane .tok-quote { color: var(--mdplus-syn-quote); }
+
+.editor-pane .tok-invalid { color: var(--mdplus-accent); }
+
+/* --- Restyle the built-in @codemirror/search panel into a sleek, compact
+   toolbar that matches the app's chrome (status bar / title bar) instead of
+   raw unstyled browser form controls.
+
+   The panel DOM (from @codemirror/search SearchPanel) is, in order:
+     input.cm-textfield[name=search]      Find field  (main-field)
+     button.cm-button[name=next]         "next"
+     button.cm-button[name=prev]         "previous"
+     button.cm-button[name=select]       "all"
+     label > input[checkbox][name=case]  "match case"
+     label > input[checkbox][name=re]    "regexp"
+     label > input[checkbox][name=word]  "by word"
+     br                                   (only when document is editable)
+     input.cm-textfield[name=replace]    Replace field
+     button.cm-button[name=replace]      "replace"
+     button.cm-button[name=replaceAll]   "replace all"
+     button[name=close]                  "×"
+
+   !important is needed throughout: CodeMirror injects its own baseTheme
+   <style> at runtime (after this stylesheet), so equal-specificity rules
+   would otherwise lose the cascade to it. */
+
+.editor-pane .cm-editor {
+  position: relative;
+}
+
+/* CodeMirror draws .cm-selectionBackground, then on focus forces the native
+   ::selection to the system Highlight color. On macOS that is the accent
+   (coral) and the letters become white, so the gray highlight disappears
+   and the text vanishes on it. WebKit ignores a transparent selection
+   background here and paints Highlight anyway, so use the same color as
+   the drawn highlight. currentColor keeps each token's own text color
+   instead of HighlightText. Specificity has to beat
+   `.cm-content :focus ::selection { background-color: Highlight !important }`. */
+.editor-pane .cm-editor .cm-scroller .cm-content ::selection,
+.editor-pane .cm-editor .cm-scroller .cm-content::selection,
+.editor-pane .cm-editor .cm-scroller .cm-content:focus ::selection,
+.editor-pane .cm-editor .cm-scroller .cm-content:focus::selection,
+.editor-pane .cm-editor .cm-scroller .cm-content :focus ::selection,
+.editor-pane .cm-editor .cm-scroller .cm-content :focus::selection,
+.editor-pane .cm-editor .cm-scroller .cm-line ::selection,
+.editor-pane .cm-editor .cm-scroller .cm-line::selection {
+  background-color: var(--mdplus-selection) !important;
+  color: currentColor !important;
+}
+
+.editor-pane .cm-panels {
+  background: transparent !important;
+  color: var(--mdplus-text) !important;
+  border: none !important;
+}
+
+.editor-pane .cm-panels-top {
+  position: absolute !important;
+  top: 12px !important;
+  right: 16px !important;
+  left: auto !important;
+  width: auto !important;
+  z-index: 30;
+}
+
+.editor-pane .cm-panels-bottom {
+  box-shadow: 0 -1px 0 0 var(--mdplus-border) !important;
+  border-top: none !important;
+}
+
+/* The panel: two stacked rows (Find, then Replace when editable). We use a
+   fixed input width so the Find and Replace fields align perfectly across
+   rows, with action buttons flowing to the right of each field and the
+   modifier pills sitting at the far end of the Find row. */
+.editor-pane .cm-search {
+  display: flex !important;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 8px;
+  width: min(320px, calc(100% - 8px));
+  padding: 10px 34px 10px 10px !important;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif !important;
+  font-size: 12.5px;
+  color: var(--mdplus-text);
+  background: var(--mdplus-bg) !important;
+  border: 1px solid var(--mdplus-border) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.14) !important;
+}
+
+/* The <br> CodeMirror inserts between the Find and Replace rows would break
+   flex layout -- turn it into a 100%-width line break so the replace field
+   starts a new flex row cleanly. */
+.editor-pane .cm-search br {
+  display: block !important;
+  flex-basis: 100% !important;
+  width: 100% !important;
+  height: 0 !important;
+  margin: 0 !important;
+  border: 0 !important;
+  padding: 0 !important;
+}
+
+/* --- Inputs ----------------------------------------------------------- */
+/* Both fields share the same width formula (clamp) so Find and Replace
+   line up exactly at every window size, and shrink gracefully instead of
+   forcing the toolbar to wrap/cascade on narrow windows. */
+.editor-pane .cm-textfield {
+  border: 1px solid var(--mdplus-border) !important;
+  background: var(--mdplus-bg) !important;
+  color: var(--mdplus-text) !important;
+  border-radius: 6px !important;
+  padding: 4px 8px !important;
+  font: inherit !important;
+  font-size: 12.5px !important;
+  outline: none !important;
+  flex: 1 1 100% !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  transition: border-color 0.12s ease, box-shadow 0.12s ease;
+}
+
+.editor-pane .cm-textfield::placeholder {
+  color: var(--mdplus-text-muted) !important;
+}
+
+.editor-pane .cm-textfield:focus {
+  border-color: var(--mdplus-accent) !important;
+  box-shadow: 0 0 0 3px rgba(232, 89, 79, 0.12) !important;
+}
+
+/* --- Action buttons (next / prev / all / replace / replace all) --------
+   Solid, rectangular, subtle background -- these read as "do something".
+   Fixed 24px square so they read as a tight icon-button cluster.
+   next/prev become chevron icons (text hidden, glyph via ::after). */
+.editor-pane .cm-button {
+  border: none !important;
+  background: var(--mdplus-hover) !important;
+  background-image: none !important;
+  color: var(--mdplus-text) !important;
+  border-radius: 6px !important;
+  padding: 0 !important;
+  font: inherit !important;
+  font-size: 12px !important;
+  line-height: 1 !important;
+  height: 24px !important;
+  min-width: 24px !important;
+  cursor: pointer;
+  transition: background-color 0.12s ease, color 0.12s ease;
+}
+
+.editor-pane .cm-button:hover {
+  background: var(--mdplus-active) !important;
+  color: var(--mdplus-text) !important;
+}
+
+.editor-pane .cm-button:active {
+  background: var(--mdplus-tab-indicator) !important;
+}
+
+/* next / prev: hide the word, draw a chevron with CSS borders so it's
+   pixel-perfect and centers reliably (Unicode carets like ⌃/⌄ vary in
+   baseline across fonts and look off-center). */
+.editor-pane .cm-search .cm-button[name="next"],
+.editor-pane .cm-search .cm-button[name="prev"] {
+  width: 24px !important;
+  font-size: 0 !important;
+}
+.editor-pane .cm-search .cm-button[name="next"]::after,
+.editor-pane .cm-search .cm-button[name="prev"]::after {
+  content: "";
+  display: block;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-color: transparent;
+}
+/* down chevron (next) */
+.editor-pane .cm-search .cm-button[name="next"]::after {
+  border-width: 5px 4px 0 4px;
+  border-top-color: currentColor;
+  margin: -2px 0 0 0;
+}
+/* up chevron (prev) */
+.editor-pane .cm-search .cm-button[name="prev"]::after {
+  border-width: 0 4px 5px 4px;
+  border-bottom-color: currentColor;
+  margin: 0 0 -2px 0;
+}
+
+/* The "all" (select matches) button reads as a secondary action -- give it
+   a hairline border so it doesn't compete with prev/next. Same for the
+   replace actions, which sit on the Replace row. */
+.editor-pane .cm-search .cm-button[name="select"],
+.editor-pane .cm-search .cm-button[name="replace"],
+.editor-pane .cm-search .cm-button[name="replaceAll"] {
+  background: transparent !important;
+  border: 1px solid var(--mdplus-border) !important;
+  padding: 0 8px !important;
+}
+
+.editor-pane .cm-search .cm-button[name="select"]:hover,
+.editor-pane .cm-search .cm-button[name="replace"]:hover,
+.editor-pane .cm-search .cm-button[name="replaceAll"]:hover {
+  background: var(--mdplus-hover) !important;
+  border-color: var(--mdplus-tab-indicator) !important;
+}
+
+/* A thin vertical divider between the Find-row action buttons and the
+   modifier pills -- visually separates "actions" from "filter options". */
+.editor-pane .cm-search .cm-button[name="select"] {
+  margin-right: 4px !important;
+}
+.editor-pane .cm-search label:first-of-type {
+  position: relative;
+  margin-left: 8px !important;
+}
+.editor-pane .cm-search label:first-of-type::before {
+  content: "";
+  position: absolute;
+  left: -10px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 1px;
+  height: 16px;
+  background: var(--mdplus-border);
+}
+
+/* --- Modifier toggles (case / regexp / whole word) ---------------------
+   Compact symbol pills: "Aa" (case), ".*" (regexp), "w" (whole word).
+   The original verbose text ("match case" etc.) is hidden and replaced
+   with a short glyph via ::after, matching Safari/VS Code conventions.
+   Smaller than buttons, fully rounded, no fill -- reads as "filter state". */
+.editor-pane .cm-search label {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  gap: 0 !important;
+  color: var(--mdplus-text-muted) !important;
+  font-size: 0 !important;
+  height: 22px !important;
+  width: 26px !important;
+  padding: 0 !important;
+  border: 1px solid var(--mdplus-border) !important;
+  border-radius: 11px !important;
+  background: transparent !important;
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 0.12s ease, color 0.12s ease, border-color 0.12s ease;
+}
+
+/* Replace the hidden label text with a compact glyph per modifier.
+   The verbose text ("match case"/"regexp"/"by word") is collapsed to
+   zero width by font-size:0 on the label; the glyph is drawn via ::after. */
+.editor-pane .cm-search label:has(input[name="case"])::after {
+  content: "Aa";
+  font-size: 11px;
+  font-weight: 500;
+}
+.editor-pane .cm-search label:has(input[name="re"])::after {
+  content: ".*";
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: -1px;
+}
+.editor-pane .cm-search label:has(input[name="word"])::after {
+  content: "w";
+  font-size: 12px;
+  font-weight: 600;
+  font-family: var(--mdplus-editor-font-family, ui-monospace, "SF Mono", Menlo, monospace);
+}
+
+.editor-pane .cm-search label:hover {
+  background: var(--mdplus-hover) !important;
+  color: var(--mdplus-text) !important;
+}
+
+.editor-pane .cm-search label input[type="checkbox"] {
+  appearance: none !important;
+  -webkit-appearance: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  margin: 0 !important;
+  border: 0 !important;
+  padding: 0 !important;
+  position: absolute !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+/* When the checkbox inside is checked, light up the whole chip with the
+   accent color. :has() is supported in all current Tauri WebViews (Safari
+   15.4+, Chrome 105+). */
+.editor-pane .cm-search label:has(input:checked) {
+  background: color-mix(in srgb, var(--mdplus-accent) 16%, transparent) !important;
+  border-color: color-mix(in srgb, var(--mdplus-accent) 50%, transparent) !important;
+  color: var(--mdplus-accent) !important;
+}
+
+/* --- Close button ------------------------------------------------------
+   Absolutely positioned over the panel's top-right corner (CodeMirror sets
+   position:absolute on [name=close] in its baseTheme). We center the ×
+   glyph with line-height + a tiny negative offset so it reads as a clean
+   circular close affordance instead of a stray mark. */
+.editor-pane .cm-search [name="close"] {
+  color: var(--mdplus-text-muted) !important;
+  background: transparent !important;
+  border: none !important;
+  font: inherit !important;
+  font-size: 15px !important;
+  line-height: 22px !important;
+  cursor: pointer;
+  top: 7px !important;
+  right: 9px !important;
+  width: 22px !important;
+  height: 22px !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border-radius: 50% !important;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.12s ease, color 0.12s ease;
+}
+
+.editor-pane .cm-search [name="close"]:hover {
+  background: var(--mdplus-hover) !important;
+  color: var(--mdplus-text) !important;
+}
+
+.editor-pane .cm-search [name="close"]:active {
+  background: var(--mdplus-active) !important;
+}

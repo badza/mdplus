@@ -1,0 +1,305 @@
+/* The shell clips the native scrollbar. The pane is 20px wider than the shell,
+   so the system thumb paints past the shell's right edge and is never seen.
+   attachOverlayScrollbar draws the same thumb the editor uses. */
+.preview-shell {
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 0;
+  position: relative;
+  overflow: hidden;
+  background: var(--mdplus-card-bg);
+  color: var(--mdplus-text);
+}
+
+.workspace.is-split .preview-shell {
+  flex: var(--split-preview, 0.5) 1 0;
+  min-width: 160px;
+}
+
+.preview-pane {
+  box-sizing: border-box;
+  height: 100%;
+  width: calc(100% + 20px);
+  overflow: auto;
+  overflow-anchor: none;
+  overscroll-behavior: contain;
+  position: relative;
+  /* Right padding includes the 20px that the shell clips away. */
+  padding: 32px 68px 80px 48px;
+}
+
+.workspace.is-split .preview-pane {
+  padding: 22px 48px 72px 28px;
+}
+
+.preview-shell .cm-custom-scrollbar-track {
+  position: absolute;
+  right: 0;
+  width: 14px;
+  z-index: 20;
+  user-select: none;
+}
+
+.preview-shell .cm-custom-scrollbar-thumb {
+  position: absolute;
+  left: 0;
+  right: 0;
+  border-radius: 0;
+  background: var(--mdplus-scrollbar-thumb);
+}
+
+.preview-shell .cm-custom-scrollbar-thumb:hover {
+  background: var(--mdplus-scrollbar-thumb-hover);
+}
+
+.preview-article {
+  max-width: 68ch;
+  margin: 0 auto;
+  font-family: var(--mdplus-editor-font-family, system-ui, sans-serif);
+  font-size: var(--mdplus-editor-font-size, 15px);
+  line-height: 1.65;
+}
+
+.preview-empty {
+  position: absolute;
+  top: 46%;
+  left: 0;
+  right: 0;
+  margin: 0;
+  text-align: center;
+  color: var(--mdplus-text-muted);
+  font-size: 13px;
+  pointer-events: none;
+}
+
+.preview-pane :is(h1, h2, h3, h4, h5, h6) {
+  line-height: 1.25;
+  font-weight: 600;
+  margin: 1.3em 0 0.4em;
+}
+
+.preview-pane h1 { font-size: 1.6em; margin-top: 0; }
+.preview-pane h2 { font-size: 1.35em; }
+.preview-pane h3 { font-size: 1.16em; }
+.preview-pane h4,
+.preview-pane h5,
+.preview-pane h6 { font-size: 1.02em; }
+
+.preview-pane p { margin: 0.55em 0; }
+
+.preview-pane a {
+  color: var(--mdplus-accent);
+  text-decoration-color: rgba(232, 89, 79, 0.4);
+}
+
+.preview-pane :is(ul, ol) {
+  margin: 0.4em 0;
+  padding-left: 1.4em;
+}
+
+.preview-pane li { margin: 0.15em 0; }
+
+.preview-pane li.task-list-item,
+.preview-pane li:has(> input[type="checkbox"]) {
+  list-style: none;
+  margin-left: -1.3em;
+}
+
+.preview-pane input[type="checkbox"] {
+  margin-right: 0.45em;
+  vertical-align: middle;
+  accent-color: var(--mdplus-accent);
+  cursor: pointer;
+}
+
+.preview-pane blockquote {
+  margin: 0.7em 0;
+  padding: 2px 0 2px 12px;
+  border-left: 2px solid var(--mdplus-border);
+  color: var(--mdplus-text-muted);
+}
+
+.preview-pane .md-alert {
+  margin: 0.8em 0;
+  padding: 8px 12px 8px 12px;
+  border-left: 2px solid var(--mdplus-border);
+  background: var(--mdplus-blockquote-bg);
+  border-radius: 0 8px 8px 0;
+  color: var(--mdplus-text);
+}
+
+.preview-pane .md-alert::before {
+  display: block;
+  margin-bottom: 2px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--mdplus-text-muted);
+}
+
+.preview-pane .md-alert-note::before { content: "Note"; }
+.preview-pane .md-alert-tip::before { content: "Tip"; }
+.preview-pane .md-alert-important::before { content: "Important"; }
+.preview-pane .md-alert-warning::before { content: "Warning"; }
+.preview-pane .md-alert-caution::before { content: "Caution"; }
+
+.preview-pane .md-alert-tip { border-left-color: #2f8f5b; }
+.preview-pane .md-alert-important { border-left-color: #7a5ea7; }
+.preview-pane .md-alert-warning { border-left-color: #c48a2a; }
+.preview-pane .md-alert-caution { border-left-color: var(--mdplus-accent); }
+.preview-pane .md-alert-caution::before { color: var(--mdplus-accent); }
+
+.preview-pane hr {
+  border: none;
+  border-top: 1px solid var(--mdplus-border);
+  margin: 1.4em 0;
+}
+
+.preview-pane code {
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 0.92em;
+}
+
+.preview-pane :not(pre) > code {
+  background: var(--mdplus-code-bg);
+  border-radius: 4px;
+  padding: 0.1em 0.35em;
+  color: var(--mdplus-syn-code);
+}
+
+.preview-pane .md-code {
+  position: relative;
+  margin: 0.8em 0;
+}
+
+.preview-pane .md-code pre,
+.preview-pane pre {
+  margin: 0.8em 0;
+  padding: 10px 12px;
+  overflow: auto;
+  background: var(--mdplus-codeblock-bg);
+  border-radius: 8px;
+  line-height: 1.5;
+}
+
+.preview-pane .md-code pre { margin: 0; }
+
+.preview-pane pre code {
+  background: none;
+  padding: 0;
+  color: inherit;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.preview-pane .md-copy {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  border: 1px solid var(--mdplus-border);
+  background: var(--mdplus-card-bg);
+  color: var(--mdplus-text-muted);
+  font: inherit;
+  font-size: 11px;
+  border-radius: 6px;
+  padding: 2px 7px;
+  cursor: pointer;
+  opacity: 0;
+}
+
+.preview-pane .md-code:hover .md-copy,
+.preview-pane .md-copy:focus {
+  opacity: 1;
+}
+
+.preview-pane img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 6px;
+}
+
+.preview-pane table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 0.8em 0;
+  font-size: 0.95em;
+}
+
+.preview-pane th,
+.preview-pane td {
+  border: 1px solid var(--mdplus-border);
+  padding: 5px 10px;
+  text-align: left;
+  vertical-align: top;
+}
+
+.preview-pane th {
+  background: var(--mdplus-table-header-bg);
+  font-weight: 600;
+}
+
+.preview-pane tbody tr:nth-child(even) {
+  background: var(--mdplus-table-bg);
+}
+
+.preview-pane del { color: var(--mdplus-text-muted); }
+
+.preview-pane .md-mermaid {
+  margin: 0.9em 0;
+  overflow-x: auto;
+}
+
+.preview-pane .md-mermaid svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin: 0 auto;
+}
+
+.preview-pane .md-mermaid-error {
+  margin: 0.8em 0;
+}
+
+.preview-pane .md-mermaid-error p {
+  margin: 0 0 6px;
+  color: var(--mdplus-accent);
+  font-size: 12.5px;
+}
+
+.preview-pane .footnotes {
+  margin-top: 2em;
+  font-size: 0.92em;
+  color: var(--mdplus-text-muted);
+  border-top: 1px solid var(--mdplus-border);
+  padding-top: 0.6em;
+}
+
+.preview-pane .sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}
+
+.preview-pane .katex { font-size: 1.05em; }
+
+.preview-pane .hljs-keyword,
+.preview-pane .hljs-selector-tag { color: var(--mdplus-syn-keyword); }
+.preview-pane .hljs-string,
+.preview-pane .hljs-attr { color: var(--mdplus-syn-string); }
+.preview-pane .hljs-number,
+.preview-pane .hljs-literal { color: var(--mdplus-syn-number); }
+.preview-pane .hljs-comment,
+.preview-pane .hljs-quote { color: var(--mdplus-syn-comment); font-style: italic; }
+.preview-pane .hljs-title,
+.preview-pane .hljs-section,
+.preview-pane .hljs-name { color: var(--mdplus-syn-heading); }
+.preview-pane .hljs-built_in,
+.preview-pane .hljs-type { color: var(--mdplus-syn-code); }
+.preview-pane .hljs-variable,
+.preview-pane .hljs-template-variable { color: var(--mdplus-text); }
