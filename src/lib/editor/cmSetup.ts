@@ -3,7 +3,8 @@ import { EditorView, keymap, drawSelection } from "@codemirror/view";
 import { defaultKeymap, history, historyKeymap } from "@codemirror/commands";
 import { markdown } from "@codemirror/lang-markdown";
 import { GFM } from "@lezer/markdown";
-import { search, searchKeymap } from "@codemirror/search";
+import { searchKeymap } from "@codemirror/search";
+import { findExtension } from "./findPanel";
 import { editorContext, editorContextCompartment } from "./editorContext";
 import { liveFormattingPlugin } from "./markdownDecorations";
 import { mermaidWidgets } from "./mermaidWidget";
@@ -36,7 +37,7 @@ export function baseExtensions(wordWrap = true): Extension[] {
     markdownAuthoring,
     customScrollbarPlugin,
     customScrollbarTheme,
-    search({ top: true }),
+    findExtension(),
     keymap.of([...defaultKeymap, ...historyKeymap, ...searchKeymap]),
     wordWrapCompartment.of(wordWrapExtension(wordWrap)),
   ];

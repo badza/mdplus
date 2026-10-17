@@ -1,4 +1,5 @@
 .workspace {
+  position: relative;
   flex: 1;
   min-height: 0;
   min-width: 0;
@@ -68,6 +69,7 @@
    instead of flowing into the clipped strip. The custom themed thumb in customScrollbar.ts
    replaces it, positioned relative to cm-editor (which keeps its original, unclipped size). */
 .editor-pane .cm-editor {
+  position: relative;
   height: 100%;
   overflow: hidden;
   font-size: var(--mdplus-editor-font-size, 15px);
@@ -176,32 +178,6 @@
 
 .editor-pane .tok-invalid { color: var(--mdplus-accent); }
 
-/* --- Restyle the built-in @codemirror/search panel into a sleek, compact
-   toolbar that matches the app's chrome (status bar / title bar) instead of
-   raw unstyled browser form controls.
-
-   The panel DOM (from @codemirror/search SearchPanel) is, in order:
-     input.cm-textfield[name=search]      Find field  (main-field)
-     button.cm-button[name=next]         "next"
-     button.cm-button[name=prev]         "previous"
-     button.cm-button[name=select]       "all"
-     label > input[checkbox][name=case]  "match case"
-     label > input[checkbox][name=re]    "regexp"
-     label > input[checkbox][name=word]  "by word"
-     br                                   (only when document is editable)
-     input.cm-textfield[name=replace]    Replace field
-     button.cm-button[name=replace]      "replace"
-     button.cm-button[name=replaceAll]   "replace all"
-     button[name=close]                  "×"
-
-   !important is needed throughout: CodeMirror injects its own baseTheme
-   <style> at runtime (after this stylesheet), so equal-specificity rules
-   would otherwise lose the cascade to it. */
-
-.editor-pane .cm-editor {
-  position: relative;
-}
-
 /* CodeMirror draws .cm-selectionBackground, then on focus forces the native
    ::selection to the system Highlight color. On macOS that is the accent
    (coral) and the letters become white, so the gray highlight disappears
@@ -222,286 +198,199 @@
   color: currentColor !important;
 }
 
-.editor-pane .cm-panels {
-  background: transparent !important;
-  color: var(--mdplus-text) !important;
-  border: none !important;
+/* Search highlights only while CodeMirror's panel is open. The visible bar
+   is outside the editor, so that panel is an empty sentinel. Hide the strip
+   when the sentinel is the only panel. */
+.editor-pane .cm-panels:empty,
+.editor-pane .cm-panels:not(:has(.cm-panel:not(.find-sentinel))) {
+  display: none !important;
 }
 
-.editor-pane .cm-panels-top {
-  position: absolute !important;
-  top: 12px !important;
-  right: 16px !important;
-  left: auto !important;
-  width: auto !important;
-  z-index: 30;
+.cm-panel.find-sentinel {
+  display: none !important;
 }
 
-.editor-pane .cm-panels-bottom {
-  box-shadow: 0 -1px 0 0 var(--mdplus-border) !important;
-  border-top: none !important;
-}
-
-/* The panel: two stacked rows (Find, then Replace when editable). We use a
-   fixed input width so the Find and Replace fields align perfectly across
-   rows, with action buttons flowing to the right of each field and the
-   modifier pills sitting at the far end of the Find row. */
-.editor-pane .cm-search {
-  display: flex !important;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 6px 8px;
-  width: min(320px, calc(100% - 8px));
-  padding: 10px 34px 10px 10px !important;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif !important;
-  font-size: 12.5px;
-  color: var(--mdplus-text);
-  background: var(--mdplus-bg) !important;
-  border: 1px solid var(--mdplus-border) !important;
-  border-radius: 12px !important;
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.14) !important;
-}
-
-/* The <br> CodeMirror inserts between the Find and Replace rows would break
-   flex layout -- turn it into a 100%-width line break so the replace field
-   starts a new flex row cleanly. */
-.editor-pane .cm-search br {
-  display: block !important;
-  flex-basis: 100% !important;
-  width: 100% !important;
-  height: 0 !important;
-  margin: 0 !important;
-  border: 0 !important;
-  padding: 0 !important;
-}
-
-/* --- Inputs ----------------------------------------------------------- */
-/* Both fields share the same width formula (clamp) so Find and Replace
-   line up exactly at every window size, and shrink gracefully instead of
-   forcing the toolbar to wrap/cascade on narrow windows. */
-.editor-pane .cm-textfield {
-  border: 1px solid var(--mdplus-border) !important;
-  background: var(--mdplus-bg) !important;
-  color: var(--mdplus-text) !important;
-  border-radius: 6px !important;
-  padding: 4px 8px !important;
-  font: inherit !important;
-  font-size: 12.5px !important;
-  outline: none !important;
-  flex: 1 1 100% !important;
-  width: 100% !important;
-  min-width: 0 !important;
-  transition: border-color 0.12s ease, box-shadow 0.12s ease;
-}
-
-.editor-pane .cm-textfield::placeholder {
-  color: var(--mdplus-text-muted) !important;
-}
-
-.editor-pane .cm-textfield:focus {
-  border-color: var(--mdplus-accent) !important;
-  box-shadow: 0 0 0 3px rgba(232, 89, 79, 0.12) !important;
-}
-
-/* --- Action buttons (next / prev / all / replace / replace all) --------
-   Solid, rectangular, subtle background -- these read as "do something".
-   Fixed 24px square so they read as a tight icon-button cluster.
-   next/prev become chevron icons (text hidden, glyph via ::after). */
-.editor-pane .cm-button {
-  border: none !important;
-  background: var(--mdplus-hover) !important;
-  background-image: none !important;
-  color: var(--mdplus-text) !important;
-  border-radius: 6px !important;
-  padding: 0 !important;
-  font: inherit !important;
-  font-size: 12px !important;
-  line-height: 1 !important;
-  height: 24px !important;
-  min-width: 24px !important;
-  cursor: pointer;
-  transition: background-color 0.12s ease, color 0.12s ease;
-}
-
-.editor-pane .cm-button:hover {
-  background: var(--mdplus-active) !important;
-  color: var(--mdplus-text) !important;
-}
-
-.editor-pane .cm-button:active {
-  background: var(--mdplus-tab-indicator) !important;
-}
-
-/* next / prev: hide the word, draw a chevron with CSS borders so it's
-   pixel-perfect and centers reliably (Unicode carets like ⌃/⌄ vary in
-   baseline across fonts and look off-center). */
-.editor-pane .cm-search .cm-button[name="next"],
-.editor-pane .cm-search .cm-button[name="prev"] {
-  width: 24px !important;
-  font-size: 0 !important;
-}
-.editor-pane .cm-search .cm-button[name="next"]::after,
-.editor-pane .cm-search .cm-button[name="prev"]::after {
-  content: "";
-  display: block;
-  width: 0;
-  height: 0;
-  border-style: solid;
-  border-color: transparent;
-}
-/* down chevron (next) */
-.editor-pane .cm-search .cm-button[name="next"]::after {
-  border-width: 5px 4px 0 4px;
-  border-top-color: currentColor;
-  margin: -2px 0 0 0;
-}
-/* up chevron (prev) */
-.editor-pane .cm-search .cm-button[name="prev"]::after {
-  border-width: 0 4px 5px 4px;
-  border-bottom-color: currentColor;
-  margin: 0 0 -2px 0;
-}
-
-/* The "all" (select matches) button reads as a secondary action -- give it
-   a hairline border so it doesn't compete with prev/next. Same for the
-   replace actions, which sit on the Replace row. */
-.editor-pane .cm-search .cm-button[name="select"],
-.editor-pane .cm-search .cm-button[name="replace"],
-.editor-pane .cm-search .cm-button[name="replaceAll"] {
-  background: transparent !important;
-  border: 1px solid var(--mdplus-border) !important;
-  padding: 0 8px !important;
-}
-
-.editor-pane .cm-search .cm-button[name="select"]:hover,
-.editor-pane .cm-search .cm-button[name="replace"]:hover,
-.editor-pane .cm-search .cm-button[name="replaceAll"]:hover {
-  background: var(--mdplus-hover) !important;
-  border-color: var(--mdplus-tab-indicator) !important;
-}
-
-/* A thin vertical divider between the Find-row action buttons and the
-   modifier pills -- visually separates "actions" from "filter options". */
-.editor-pane .cm-search .cm-button[name="select"] {
-  margin-right: 4px !important;
-}
-.editor-pane .cm-search label:first-of-type {
-  position: relative;
-  margin-left: 8px !important;
-}
-.editor-pane .cm-search label:first-of-type::before {
-  content: "";
+/* JetBrains-style find bar: one row at the top right, replace on a second
+   row. WKWebView stretches an absolute child of a flex row, which made the
+   drag clamp unable to move the bar down. */
+.find-float {
   position: absolute;
-  left: -10px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 1px;
-  height: 16px;
-  background: var(--mdplus-border);
+  z-index: 40;
+  top: 8px;
+  right: 14px;
+  left: auto;
+  bottom: auto;
+  align-self: flex-start;
+  width: max-content;
+  max-width: calc(100% - 24px);
+  height: max-content;
+  padding: 3px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+  font-size: 13px;
+  color: var(--mdplus-text);
+  background: var(--mdplus-surface-bg);
+  border: 1px solid var(--mdplus-border);
+  border-radius: 8px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.14);
+  cursor: default;
+  touch-action: none;
 }
 
-/* --- Modifier toggles (case / regexp / whole word) ---------------------
-   Compact symbol pills: "Aa" (case), ".*" (regexp), "w" (whole word).
-   The original verbose text ("match case" etc.) is hidden and replaced
-   with a short glyph via ::after, matching Safari/VS Code conventions.
-   Smaller than buttons, fully rounded, no fill -- reads as "filter state". */
-.editor-pane .cm-search label {
-  display: inline-flex !important;
+.find-float.is-placed {
+  right: auto;
+}
+
+.find-float.is-dragging {
+  cursor: grabbing;
+}
+
+.find-line {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  min-width: 0;
+}
+
+.find-grip,
+.find-toggle,
+.find-toggle-spacer {
+  flex: none;
+  width: 22px;
+  height: 22px;
+}
+
+.find-grip {
+  display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0 !important;
-  color: var(--mdplus-text-muted) !important;
-  font-size: 0 !important;
-  height: 22px !important;
-  width: 26px !important;
-  padding: 0 !important;
-  border: 1px solid var(--mdplus-border) !important;
-  border-radius: 11px !important;
-  background: transparent !important;
-  cursor: pointer;
+  color: var(--mdplus-text-muted);
+  cursor: grab;
   user-select: none;
-  transition: background-color 0.12s ease, color 0.12s ease, border-color 0.12s ease;
+  touch-action: none;
 }
 
-/* Replace the hidden label text with a compact glyph per modifier.
-   The verbose text ("match case"/"regexp"/"by word") is collapsed to
-   zero width by font-size:0 on the label; the glyph is drawn via ::after. */
-.editor-pane .cm-search label:has(input[name="case"])::after {
-  content: "Aa";
+.find-float.is-dragging .find-grip {
+  cursor: grabbing;
+}
+
+.find-field {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  width: min(280px, 48vw);
+  min-width: 0;
+  height: 24px;
+  padding: 0 4px 0 8px;
+  border: 1px solid var(--mdplus-border);
+  border-radius: 4px;
+  background: var(--mdplus-bg);
+  cursor: text;
+}
+
+.find-field:focus-within {
+  border-color: var(--mdplus-accent);
+}
+
+.find-input {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  border: none;
+  padding: 0;
+  background: transparent;
+  color: var(--mdplus-text);
+  font: inherit;
+  font-size: 13px;
+  outline: none;
+  cursor: text;
+  user-select: text;
+  -webkit-user-select: text;
+  touch-action: auto;
+}
+
+.find-input::placeholder {
+  color: var(--mdplus-text-muted);
+}
+
+.find-count {
+  flex: none;
   font-size: 11px;
-  font-weight: 500;
-}
-.editor-pane .cm-search label:has(input[name="re"])::after {
-  content: ".*";
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: -1px;
-}
-.editor-pane .cm-search label:has(input[name="word"])::after {
-  content: "w";
-  font-size: 12px;
-  font-weight: 600;
-  font-family: var(--mdplus-editor-font-family, ui-monospace, "SF Mono", Menlo, monospace);
+  font-variant-numeric: tabular-nums;
+  color: var(--mdplus-text-muted);
+  white-space: nowrap;
+  padding-right: 2px;
 }
 
-.editor-pane .cm-search label:hover {
-  background: var(--mdplus-hover) !important;
-  color: var(--mdplus-text) !important;
+.find-count.is-none {
+  color: var(--mdplus-accent);
 }
 
-.editor-pane .cm-search label input[type="checkbox"] {
-  appearance: none !important;
-  -webkit-appearance: none !important;
-  width: 0 !important;
-  height: 0 !important;
-  margin: 0 !important;
-  border: 0 !important;
-  padding: 0 !important;
-  position: absolute !important;
-  opacity: 0 !important;
-  pointer-events: none !important;
+.find-up {
+  display: inline-flex;
+  transform: rotate(180deg);
 }
 
-/* When the checkbox inside is checked, light up the whole chip with the
-   accent color. :has() is supported in all current Tauri WebViews (Safari
-   15.4+, Chrome 105+). */
-.editor-pane .cm-search label:has(input:checked) {
-  background: color-mix(in srgb, var(--mdplus-accent) 16%, transparent) !important;
-  border-color: color-mix(in srgb, var(--mdplus-accent) 50%, transparent) !important;
-  color: var(--mdplus-accent) !important;
-}
-
-/* --- Close button ------------------------------------------------------
-   Absolutely positioned over the panel's top-right corner (CodeMirror sets
-   position:absolute on [name=close] in its baseTheme). We center the ×
-   glyph with line-height + a tiny negative offset so it reads as a clean
-   circular close affordance instead of a stray mark. */
-.editor-pane .cm-search [name="close"] {
-  color: var(--mdplus-text-muted) !important;
-  background: transparent !important;
-  border: none !important;
-  font: inherit !important;
-  font-size: 15px !important;
-  line-height: 22px !important;
+.find-icon,
+.find-text,
+.find-chip {
+  appearance: none;
+  font: inherit;
   cursor: pointer;
-  top: 7px !important;
-  right: 9px !important;
-  width: 22px !important;
-  height: 22px !important;
-  padding: 0 !important;
-  margin: 0 !important;
-  border-radius: 50% !important;
-  display: flex !important;
+  color: var(--mdplus-text-muted);
+}
+
+.find-icon {
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  transition: background-color 0.12s ease, color 0.12s ease;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border: none;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--mdplus-text);
 }
 
-.editor-pane .cm-search [name="close"]:hover {
-  background: var(--mdplus-hover) !important;
-  color: var(--mdplus-text) !important;
+.find-icon:hover,
+.find-text:hover,
+.find-chip:hover {
+  background: var(--mdplus-hover);
+  color: var(--mdplus-text);
 }
 
-.editor-pane .cm-search [name="close"]:active {
-  background: var(--mdplus-active) !important;
+.find-text {
+  height: 24px;
+  padding: 0 8px;
+  border: none;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--mdplus-text);
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.find-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 18px;
+  padding: 0;
+  border: none;
+  border-radius: 3px;
+  background: transparent;
+  font-size: 11px;
+  font-weight: 650;
+  letter-spacing: -0.03em;
+  user-select: none;
+}
+
+.find-chip.is-on {
+  color: var(--mdplus-accent);
+  background: color-mix(in srgb, var(--mdplus-accent) 16%, transparent);
 }

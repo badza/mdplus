@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { fileName, parentDir } from "../src/lib/path.ts";
 import { isLocalMachineUrl } from "../src/lib/net.ts";
 import { restoredActiveId } from "../src/lib/restoreActive.ts";
+import { findRanges, selectedFindText } from "../src/lib/preview/previewFind.ts";
 
 assert.equal(fileName("/Users/me/notes/a.md"), "a.md");
 assert.equal(fileName("C:\\Notes\\todo.md"), "todo.md");
@@ -28,5 +29,26 @@ const opened = [
 assert.equal(restoredActiveId(opened, 2), "b");
 assert.equal(restoredActiveId(opened, 0), "a");
 assert.equal(restoredActiveId([], 0), null);
+
+const plain = { search: "cat", caseSensitive: false, regexp: false, wholeWord: false };
+assert.deepEqual(findRanges("Cat catalog", plain).map((r) => r.from), [0, 4]);
+assert.deepEqual(
+  findRanges("Cat catalog", { ...plain, caseSensitive: true }).map((r) => r.from),
+  [4],
+);
+assert.deepEqual(
+  findRanges("the cat catalog", { ...plain, wholeWord: true }).map((r) => r.from),
+  [4],
+);
+assert.deepEqual(findRanges("cat cot", { ...plain, search: "c.t", regexp: true }).map((r) => r.from), [0, 4]);
+assert.deepEqual(findRanges("abc", { ...plain, search: "[", regexp: true }), []);
+assert.deepEqual(findRanges("a\nb", { ...plain, search: "a\\nb" }), [{ from: 0, to: 3 }]);
+const starred = findRanges("aaaa", { ...plain, search: "a*", regexp: true });
+assert.ok(starred.length < 20);
+assert.ok(starred.every((r) => r.to > r.from));
+assert.equal(selectedFindText(""), "");
+assert.equal(selectedFindText("cat"), "cat");
+assert.equal(selectedFindText("a\nb"), "a\\nb");
+assert.equal(selectedFindText("a".repeat(101)), "");
 
 console.log("ok");
