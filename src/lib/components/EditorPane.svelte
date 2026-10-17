@@ -17,7 +17,7 @@
   let {
     activeTabId,
     wordWrap = true,
-    focusMode = true,
+    focusMode = false,
     fullMarkdown = false,
     autoSave = false,
     viewMode = "source",

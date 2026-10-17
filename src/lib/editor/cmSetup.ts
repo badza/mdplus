@@ -1,5 +1,5 @@
 import { Compartment, EditorState, type Extension } from "@codemirror/state";
-import { EditorView, keymap, highlightActiveLine, drawSelection } from "@codemirror/view";
+import { EditorView, keymap, drawSelection } from "@codemirror/view";
 import { defaultKeymap, history, historyKeymap } from "@codemirror/commands";
 import { markdown } from "@codemirror/lang-markdown";
 import { GFM } from "@lezer/markdown";
@@ -26,7 +26,6 @@ export function baseExtensions(wordWrap = true): Extension[] {
   return [
     history(),
     drawSelection(),
-    highlightActiveLine(),
     markdown({ extensions: GFM }),
     mdplusHighlighting,
     mdplusEditorTheme,

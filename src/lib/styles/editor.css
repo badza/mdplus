@@ -128,12 +128,8 @@
   color: var(--mdplus-text-muted);
 }
 
-/* CodeMirror's default active-line highlight is a solid, full-width bar -- reads as a
-   stray toolbar rather than a cursor cue. Tone it down to the same quiet level as our
-   other hover/press backgrounds instead of turning it off (it still helps orient the eye
-   in a long document). */
 .editor-pane .cm-activeLine {
-  background-color: var(--mdplus-hover) !important;
+  background-color: transparent !important;
 }
 
 /* --- Syntax highlighting token classes ---------------------------------

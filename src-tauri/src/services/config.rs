@@ -9,9 +9,8 @@ pub struct AppSettings {
     pub font_size: u32,
     pub font_family: String,
     pub word_wrap: bool,
-    // Write uses the same centered column as Read. Defaulted so a
-    // settings.json from before Focus existed still loads.
-    #[serde(default = "default_focus_mode")]
+    // Write uses the same centered column as Read. Off unless the file says so.
+    #[serde(default)]
     pub focus_mode: bool,
     // Write and Split keep marks and blocks as typed text. Defaulted so a
     // settings.json from before Full markdown existed still loads.
@@ -38,10 +37,6 @@ fn default_locale() -> String {
     "system".into()
 }
 
-fn default_focus_mode() -> bool {
-    true
-}
-
 impl Default for AppSettings {
     fn default() -> Self {
         AppSettings {
@@ -49,7 +44,7 @@ impl Default for AppSettings {
             font_size: 14,
             font_family: "system-ui".into(),
             word_wrap: true,
-            focus_mode: default_focus_mode(),
+            focus_mode: false,
             full_markdown: false,
             auto_save: false,
             restore_session: true,
@@ -106,7 +101,7 @@ mod tests {
         assert_eq!(restored.recent_files_limit, 15);
         assert_eq!(restored.view_mode, "source");
         assert_eq!(restored.locale, "system");
-        assert!(restored.focus_mode);
+        assert!(!restored.focus_mode);
         assert!(!restored.full_markdown);
     }
 
@@ -127,7 +122,7 @@ mod tests {
         assert_eq!(restored.font_size, 16);
         assert_eq!(restored.theme, "dark");
         assert_eq!(restored.locale, "system");
-        assert!(restored.focus_mode);
+        assert!(!restored.focus_mode);
         assert!(!restored.full_markdown);
     }
 

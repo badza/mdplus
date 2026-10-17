@@ -75,7 +75,7 @@ export const mdplusHighlightStyle = HighlightStyle.define([
 
 export const mdplusHighlighting = syntaxHighlighting(mdplusHighlightStyle, { fallback: true });
 
-// Editor chrome theme: cursor colour, selection background, active-line background.
+// Editor chrome theme: cursor colour and selection background.
 // CodeMirror's default draws a 1.2px black caret and uses the platform selection
 // colour -- both are hard to see in dark mode and don't match the app's accent.
 // We widen the cursor to 2px and tint it with the accent colour so it's always
@@ -117,13 +117,5 @@ export const mdplusEditorTheme = EditorView.baseTheme({
   },
   ".cm-searchMatch-selected": {
     background: "var(--mdplus-selection-match)",
-  },
-
-  // Active line -- keep the existing subtle treatment.
-  ".cm-activeLine": {
-    backgroundColor: "var(--mdplus-hover)",
-  },
-  ".cm-activeLineGutter": {
-    backgroundColor: "var(--mdplus-hover)",
   },
 });
