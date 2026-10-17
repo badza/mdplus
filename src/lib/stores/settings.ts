@@ -16,7 +16,6 @@ const DEFAULT_SETTINGS: AppSettings = {
   fullMarkdown: false,
   autoSave: false,
   restoreSession: true,
-  defaultEncoding: "utf-8",
   recentFilesLimit: RECENT_FILES_DEFAULT,
   viewMode: "source",
   locale: "system",

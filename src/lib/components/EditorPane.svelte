@@ -36,8 +36,8 @@
     viewMode?: ViewMode;
     filePath?: string | null;
     onCursorChange?: (line: number, col: number) => void;
-    onAutoSave?: () => void;
-    onDocChange?: () => void;
+    onAutoSave?: (id: string) => void;
+    onDocChange?: (id: string) => void;
     onWordCountChange?: (count: number) => void;
     onOpenRemote?: (url: string) => void;
   } = $props();
@@ -50,6 +50,8 @@
   let mountedWordWrap: boolean | null = null;
   let autoSaveTimer: ReturnType<typeof setTimeout> | undefined;
   let docChangeTimer: ReturnType<typeof setTimeout> | undefined;
+  let autoSaveFor: string | null = null;
+  let docChangeFor: string | null = null;
   const AUTO_SAVE_DEBOUNCE_MS = 800;
   const DOC_CHANGE_DEBOUNCE_MS = 1000;
   let isDocEmpty = $state(true);
@@ -81,18 +83,28 @@
           // survive a tab switch, and keep the dirty flag O(1) via Text ref-equality.
           editorStates.set(mountedTabId, view!.state);
           if (transactions.some((tr) => tr.docChanged)) {
-            updateDirty(mountedTabId, view!.state.doc);
+            const editedId = mountedTabId;
+            updateDirty(editedId, view!.state.doc);
             reportContentMetrics();
             if (autoSave) {
+              if (autoSaveFor && autoSaveFor !== editedId) onAutoSave?.(autoSaveFor);
+              autoSaveFor = editedId;
               clearTimeout(autoSaveTimer);
-              autoSaveTimer = setTimeout(() => onAutoSave?.(), AUTO_SAVE_DEBOUNCE_MS);
+              autoSaveTimer = setTimeout(() => {
+                autoSaveFor = null;
+                onAutoSave?.(editedId);
+              }, AUTO_SAVE_DEBOUNCE_MS);
             }
             // Untitled-buffer persistence: debounce a doc-change callback so a
-            // crash mid-typing doesn't lose more than ~1s of work. The parent
-            // decides what to persist (scratch file + session.json) based on the
-            // active tab's kind.
+            // crash mid-typing doesn't lose more than ~1s of work. The id is the
+            // tab that changed. Editing a different tab flushes the previous one.
+            if (docChangeFor && docChangeFor !== editedId) onDocChange?.(docChangeFor);
+            docChangeFor = editedId;
             clearTimeout(docChangeTimer);
-            docChangeTimer = setTimeout(() => onDocChange?.(), DOC_CHANGE_DEBOUNCE_MS);
+            docChangeTimer = setTimeout(() => {
+              docChangeFor = null;
+              onDocChange?.(editedId);
+            }, DOC_CHANGE_DEBOUNCE_MS);
           }
         }
         reportCursor();

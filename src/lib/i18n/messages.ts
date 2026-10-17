@@ -120,7 +120,6 @@ export interface Messages {
     settings: string;
     untitled: string;
     untitledN: string;
-    deleted: string;
     close: string;
     scrollLeft: string;
     scrollRight: string;
@@ -194,6 +193,7 @@ export interface Messages {
     reload: string;
     overwriteAction: string;
     reloadAction: string;
+    notUtf8: string;
   };
   preview: {
     empty: string;
@@ -346,7 +346,6 @@ const en: Messages = {
     settings: "Settings",
     untitled: "Untitled",
     untitledN: "Untitled-{n}",
-    deleted: "(deleted)",
     close: "Close",
     scrollLeft: "Scroll tabs left",
     scrollRight: "Scroll tabs right",
@@ -392,6 +391,7 @@ const en: Messages = {
     reload: "Reload the disk version instead? Your unsaved edits will be discarded.",
     overwriteAction: "Overwrite",
     reloadAction: "Reload",
+    notUtf8: "This file isn't UTF-8, so it was left unchanged.",
   },
   openUrl: {
     title: "Open from URL",

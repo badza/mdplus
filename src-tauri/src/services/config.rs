@@ -18,7 +18,6 @@ pub struct AppSettings {
     pub full_markdown: bool,
     pub auto_save: bool,
     pub restore_session: bool,
-    pub default_encoding: String,
     pub recent_files_limit: u32,
     // "source" | "split" | "preview". Defaulted so a settings.json written
     // before view modes existed still loads.
@@ -48,7 +47,6 @@ impl Default for AppSettings {
             full_markdown: false,
             auto_save: false,
             restore_session: true,
-            default_encoding: "utf-8".into(),
             recent_files_limit: 15,
             view_mode: default_view_mode(),
             locale: default_locale(),
@@ -85,7 +83,7 @@ pub fn load(app: &tauri::AppHandle) -> Result<AppSettings, String> {
 pub fn save(app: &tauri::AppHandle, settings: &AppSettings) -> Result<(), String> {
     let path = settings_file(app)?;
     let json = serde_json::to_string_pretty(settings).map_err(|e| e.to_string())?;
-    std::fs::write(path, json).map_err(|e| e.to_string())
+    crate::services::write::atomic_write(&path, json.as_bytes())
 }
 
 #[cfg(test)]
@@ -107,6 +105,7 @@ mod tests {
 
     #[test]
     fn settings_without_view_mode_still_parse() {
+        // defaultEncoding is an old unused field. It must be ignored.
         let json = r#"{
             "theme": "dark",
             "fontSize": 16,

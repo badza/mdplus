@@ -18,9 +18,8 @@
   } = $props();
 
   const tip = $derived.by(() => {
-    const name = tab.isDeleted ? `${tab.title} ${$messages.tabs.deleted}` : tab.title;
     const location = tab.path ?? tab.sourceUrl;
-    return location ? `${name}\n${location}` : name;
+    return location ? `${tab.title}\n${location}` : tab.title;
   });
 
   function handleContextMenu(e: MouseEvent) {
@@ -41,7 +40,6 @@
   <button
     class="tab"
     class:active
-    class:deleted={tab.isDeleted}
     onclick={onSelect}
     onauxclick={handleAuxClick}
     oncontextmenu={handleContextMenu}
@@ -49,7 +47,7 @@
     aria-label={tab.path ?? tab.sourceUrl ?? tab.title}
   >
     <span class="tab-icon" aria-hidden="true"><Icon name={tab.kind === "settings" ? "settings" : "markdown"} size={13} /></span>
-    <span class="tab-title">{tab.title}{tab.isDeleted ? ` ${$messages.tabs.deleted}` : ""}</span>
+    <span class="tab-title">{tab.title}</span>
     <span class="tab-end">
       <span
         class="tab-close"

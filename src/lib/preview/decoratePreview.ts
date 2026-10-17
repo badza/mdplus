@@ -4,6 +4,7 @@ import { whenKatexFontsReady } from "./katexFonts";
 import { codeLanguage, highlightCode } from "./highlight";
 import { mermaidErrorText, peekMermaidSvg, renderMermaidSvg } from "./mermaid";
 import { renderMarkdown } from "./renderMarkdown";
+import { isLocalMachineUrl } from "../net";
 import { resolveResourceUrl } from "./resources";
 
 export interface DecorateOptions {
@@ -57,7 +58,13 @@ export function decoratePreview(root: HTMLElement, options: DecorateOptions): vo
   for (const img of root.querySelectorAll("img")) {
     const src = img.getAttribute("src");
     if (!src) continue;
-    img.src = resolveResourceUrl(src, options.basePath);
+    const resolved = resolveResourceUrl(src, options.basePath);
+    // A note can point an image at a service on this machine. Don't request it.
+    if (isLocalMachineUrl(resolved)) {
+      img.removeAttribute("src");
+      continue;
+    }
+    img.src = resolved;
   }
 
   for (const code of [...root.querySelectorAll("pre > code")]) {

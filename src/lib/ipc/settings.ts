@@ -16,7 +16,6 @@ export interface AppSettings {
   fullMarkdown: boolean;
   autoSave: boolean;
   restoreSession: boolean;
-  defaultEncoding: string;
   recentFilesLimit: number;
   viewMode: ViewMode;
   // "system" follows the OS language. Any other value is a catalog id

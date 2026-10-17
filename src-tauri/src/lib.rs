@@ -13,7 +13,6 @@ pub fn run() {
             commands::tabs::save_session,
             commands::tabs::load_session,
             commands::file::save_file,
-            commands::file::save_file_as,
             commands::file::open_file_path,
             commands::file::stat_file,
             commands::file::save_scratch,
