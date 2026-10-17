@@ -47,9 +47,9 @@
     "updater": {
       "active": true,
       "endpoints": [
-        "https://mdplus-releases.example.com/{{target}}/{{arch}}/{{current_version}}"
+        "https://github.com/badza/mdplus/releases/latest/download/latest.json"
       ],
-      "pubkey": ""
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDMxNzFCRDVDODFERkQzOApSV1E0L1IzSTFSc1hBOFRGTHRsbm9IYVNvM3EweUd0WE9jejhkaEp1WUVFS090VTl1bUtLNWtudQo="
     }
   }
 }
