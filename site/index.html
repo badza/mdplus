@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>mdplus — A focused markdown editor</title>
-  <meta name="description" content="A free markdown editor for the markdown files this work is made of. PRDs, specs, plans, and the files agents read. The screen shows the document. The file stays markdown.">
+  <meta name="description" content="A free markdown editor for Mac, Windows, and Linux. You see the document. The line you are editing shows its markdown. The file you save is still markdown.">
   <link rel="icon" href="logo.png" type="image/png" sizes="256x256">
   <link rel="apple-touch-icon" href="logo.png">
   <link rel="stylesheet" href="site.css">
@@ -23,8 +23,8 @@
     <section class="hero rail">
       <div class="copy">
         <h1><span class="h1-lead">A focused markdown editor</span><span class="h1-for">for <span class="cycle" aria-hidden="true"><span class="cycle-item is-on">PRD.md</span><span class="cycle-item">Spec.md</span><span class="cycle-item">PLAN.md</span><span class="cycle-item">README.md</span><span class="cycle-item">AGENTS.md</span><span class="cycle-item">AGENTS.override.md</span><span class="cycle-item">CLAUDE.md</span><span class="cycle-item">CLAUDE.local.md</span><span class="cycle-item">GEMINI.md</span><span class="cycle-item">SKILL.md</span><span class="cycle-item">JULES.md</span><span class="cycle-item">CONVENTIONS.md</span><span class="cycle-item">copilot-instructions.md</span></span></span><span class="sr-only">PRD.md, Spec.md, PLAN.md, README.md, AGENTS.md, AGENTS.override.md, CLAUDE.md, CLAUDE.local.md, GEMINI.md, SKILL.md, JULES.md, CONVENTIONS.md, and copilot-instructions.md.</span></h1>
-        <p class="deck">For those files, and the rest of your markdown. Free for Mac, Windows, and Linux.</p>
-        <p class="deck deck-next">The screen shows the document. The line you are editing shows the markdown, and the file stays markdown. A red mark on the tab means it is not saved yet.</p>
+        <p class="deck">Free for Mac, Windows, and Linux. You see the document. The line you are editing shows its markdown, and the file you save is still markdown.</p>
+        <p class="deck deck-next">A red mark on the tab means it is not saved yet.</p>
         <div class="downloads" data-downloads="primary">
           <a class="btn" href="https://github.com/badza/mdplus/releases/latest">Download</a>
         </div>
@@ -37,7 +37,7 @@
     <section class="chapter rail">
       <div class="copy">
         <h2>The diagram is in the file.</h2>
-        <p>The flowchart is a mermaid block in the markdown, not a picture someone exported. Move the slider to see this note as a page.</p>
+        <p>The flowchart is a mermaid block in the note. Move the slider and the same file reads as a page.</p>
       </div>
       <figure class="compare">
         <div class="compare-frame">
@@ -55,7 +55,7 @@
     <section class="chapter rail">
       <div class="copy">
         <h2>The markdown next to the page.</h2>
-        <p>Split puts the file on the left and the document on the right. Every mark stays visible, so a bad link or a wrong heading is easy to find.</p>
+        <p>Split shows the markdown on the left and the document on the right. The link, the bold, and the code stay written out, so you can find the line that looks wrong.</p>
       </div>
       <figure class="shot">
         <img src="shots/split.png" alt="Full markdown on the left, including the link and the marks. The document is on the right." width="1180" height="792">
@@ -63,8 +63,8 @@
       <div class="aside">
         <div class="copy">
           <h2>The command palette.</h2>
-          <p>Open a file from disk or from a link, save it, or hand it off. Handoff sends the open file, or a selection, to Claude, Grok, Codex, or another agent you already run.</p>
-          <p>Auto save writes a file that already has a path. Next launch can reopen the same tabs.</p>
+          <p>New tab, open, save, and handoff are the first commands. Handoff sends the open file, or a selection, to Claude, Grok, Codex, or another agent you already run.</p>
+          <p>If the file already has a path, mdplus saves it while you work. The next launch can reopen the same tabs.</p>
         </div>
         <figure class="shot shot-palette">
           <img src="shots/palette.png" alt="The command palette. Handoff is listed with New Tab, Open File, Open from URL, Save, Save As, and Close Tab." width="1044" height="607">
@@ -74,8 +74,8 @@
 
     <section class="chapter rail">
       <div class="copy">
-        <h2>The same document, in the theme you want.</h2>
-        <p>Auto follows your system. Click a theme to see this note in it.</p>
+        <h2>Choose a theme for this note.</h2>
+        <p>Auto follows your system. This one is Dusk.</p>
       </div>
       <div class="themes" role="group" aria-label="Themes">
         <button type="button" data-theme="auto" aria-pressed="false"><i class="swatch auto"></i>Auto</button>
@@ -130,13 +130,15 @@
             if (items[previous] !== items[current]) items[previous].classList.remove("is-out");
           }, 520);
         }
-        window.setInterval(function () { show(current + 1); }, 2200);
+        window.setInterval(function () { show(current + 1); }, 2600);
       }
       var compare = document.getElementById("compare");
       var frame = document.querySelector(".compare-frame");
       function reveal() {
         var n = Number(compare.value);
-        frame.style.setProperty("--reveal", n + "%");
+        var value = n + "%";
+        frame.style.setProperty("--reveal", value);
+        compare.style.setProperty("--reveal", value);
         frame.classList.toggle("is-edge", n < 1 || n > 99);
         compare.setAttribute("aria-valuetext", n < 8 ? "Markdown" : n > 92 ? "The page" : n + "% of the page");
       }
@@ -157,13 +159,26 @@
       if (!shot || !buttons.length) return;
       buttons.forEach(function (button) {
         button.addEventListener("click", function () {
+          if (button.getAttribute("aria-pressed") === "true") return;
           var name = button.getAttribute("data-theme") || "dusk";
           var file = name === "auto" ? "paper" : name;
-          shot.src = "shots/" + file + ".png";
-          shot.alt = alts[name] || alts.dusk;
-          buttons.forEach(function (other) {
-            other.setAttribute("aria-pressed", other === button ? "true" : "false");
-          });
+          var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+          function apply() {
+            shot.src = "shots/" + file + ".png";
+            shot.alt = alts[name] || alts.dusk;
+            buttons.forEach(function (other) {
+              other.setAttribute("aria-pressed", other === button ? "true" : "false");
+            });
+          }
+          if (reduce) {
+            apply();
+            return;
+          }
+          shot.classList.add("is-swap");
+          window.setTimeout(function () {
+            apply();
+            window.setTimeout(function () { shot.classList.remove("is-swap"); }, 30);
+          }, 180);
         });
       });
     })();
