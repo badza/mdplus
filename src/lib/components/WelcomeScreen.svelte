@@ -2,7 +2,8 @@
   import Icon from "./Icon.svelte";
   import { messages } from "../i18n";
   import { shortcut } from "../platform";
-  import { recentFiles } from "../stores/session";
+  import { fileName, parentDir } from "../path";
+import { recentFiles } from "../stores/session";
   import { normalizeRecentFilesLimit, settings } from "../stores/settings";
   import appIcon from "../assets/app-icon.png";
 
@@ -21,14 +22,10 @@
   // The welcome list stays short. Open Recent follows the settings limit.
   const recentShown = $derived(Math.min(5, normalizeRecentFilesLimit($settings.recentFilesLimit)));
 
-  function baseName(path: string): string {
-    return path.split("/").pop() ?? path;
-  }
-
   function dirName(path: string): string {
-    const idx = path.lastIndexOf("/");
-    if (idx <= 0) return "";
-    return path.slice(0, idx);
+    const parent = parentDir(path);
+    if (parent === path || parent === "/" || parent === "\\") return "";
+    return parent;
   }
 </script>
 
@@ -63,7 +60,7 @@
           <li>
             <button class="recent-item" onclick={() => onOpenRecent(path)} title={path}>
               <Icon name="document" size={13} />
-              <span class="recent-name">{baseName(path)}</span>
+              <span class="recent-name">{fileName(path)}</span>
               {#if dirName(path)}
                 <span class="recent-dir">{dirName(path)}</span>
               {/if}

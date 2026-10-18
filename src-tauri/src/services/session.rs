@@ -28,7 +28,7 @@ fn serialize_session(session: &SessionState) -> Result<String, String> {
 pub fn save(app: &tauri::AppHandle, session: &SessionState) -> Result<(), String> {
     let path = session_file(app)?;
     let json = serialize_session(session)?;
-    std::fs::write(path, json).map_err(|e| e.to_string())
+    crate::services::write::atomic_write(&path, json.as_bytes())
 }
 
 pub fn load(app: &tauri::AppHandle) -> Result<SessionState, String> {

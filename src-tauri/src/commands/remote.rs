@@ -36,7 +36,17 @@ async fn fetch_body(target: &RemoteTarget) -> Result<String, String> {
                 ));
             }
             match attempt.url().scheme() {
-                "http" | "https" => attempt.follow(),
+                "http" | "https" => {
+                    let original = attempt
+                        .previous()
+                        .first()
+                        .map(|url| url.as_str())
+                        .unwrap_or("");
+                    if remote::redirect_targets_local_machine(original, attempt.url().as_str()) {
+                        return attempt.stop();
+                    }
+                    attempt.follow()
+                }
                 _ => attempt.stop(),
             }
         }))

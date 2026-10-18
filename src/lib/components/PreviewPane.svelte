@@ -1,5 +1,6 @@
 <script lang="ts">
   import { attachOverlayScrollbar } from "../editor/customScrollbar";
+  import { syncPreviewFind } from "../editor/findPanel";
   import { messages } from "../i18n";
   import { get } from "svelte/store";
   import { paintPreview } from "../preview/decoratePreview";
@@ -52,10 +53,12 @@
     // on the same turn as a scroll gesture in split view.
     const frame = requestAnimationFrame(() => {
       if (token.dead) return;
-      paintPreview(host, text, {
+      void paintPreview(host, text, {
         dark: isDark,
         basePath: base,
         cancelled: () => token.dead,
+      }).then(() => {
+        if (!token.dead) syncPreviewFind();
       });
     });
     return () => {
@@ -144,7 +147,7 @@
 </script>
 
 <div class="preview-shell" bind:this={shell}>
-  <div class="preview-pane" bind:this={root}>
+  <div class="preview-pane" tabindex="-1" bind:this={root}>
     <article class="preview-article" bind:this={article}></article>
     {#if solo && !markdown.trim()}
       <p class="preview-empty">{$messages.preview.empty}</p>

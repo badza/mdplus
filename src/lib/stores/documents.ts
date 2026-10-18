@@ -3,6 +3,7 @@ import type { EditorState, Text } from "@codemirror/state";
 import { createDocState } from "../editor/cmSetup";
 import { messages } from "../i18n";
 import type { FileMeta } from "../ipc/fs";
+import { fileName } from "../path";
 
 export type { FileMeta };
 
@@ -153,7 +154,7 @@ export function closeTab(id: string) {
 
 export function markSaved(id: string, path: string, doc: Text) {
   savedDocs.set(id, doc);
-  const title = path.split("/").pop() ?? path;
+  const title = fileName(path);
   // Once a tab has a path, it's file-backed -- its scratch buffer (if any) is now
   // redundant. Caller is responsible for deleteScratch() before this call; we just
   // clear the id so future session saves don't try to write a scratch file for it.

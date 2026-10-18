@@ -120,7 +120,6 @@ export interface Messages {
     settings: string;
     untitled: string;
     untitledN: string;
-    deleted: string;
     close: string;
     scrollLeft: string;
     scrollRight: string;
@@ -194,6 +193,7 @@ export interface Messages {
     reload: string;
     overwriteAction: string;
     reloadAction: string;
+    notUtf8: string;
   };
   preview: {
     empty: string;
@@ -205,6 +205,23 @@ export interface Messages {
   editor: {
     startWriting: string;
     startHint: string;
+  };
+  find: {
+    placeholder: string;
+    replacePlaceholder: string;
+    next: string;
+    previous: string;
+    close: string;
+    matchCase: string;
+    regexp: string;
+    wholeWord: string;
+    replace: string;
+    replaceAll: string;
+    select: string;
+    drag: string;
+    count: string;
+    total: string;
+    none: string;
   };
   updates: {
     failed: string;
@@ -346,7 +363,6 @@ const en: Messages = {
     settings: "Settings",
     untitled: "Untitled",
     untitledN: "Untitled-{n}",
-    deleted: "(deleted)",
     close: "Close",
     scrollLeft: "Scroll tabs left",
     scrollRight: "Scroll tabs right",
@@ -392,6 +408,7 @@ const en: Messages = {
     reload: "Reload the disk version instead? Your unsaved edits will be discarded.",
     overwriteAction: "Overwrite",
     reloadAction: "Reload",
+    notUtf8: "This file isn't UTF-8, so it was left unchanged.",
   },
   openUrl: {
     title: "Open from URL",
@@ -432,6 +449,23 @@ const en: Messages = {
   editor: {
     startWriting: "Start writing",
     startHint: "Type to begin, or drop a .md file onto the window",
+  },
+  find: {
+    placeholder: "Find",
+    replacePlaceholder: "Replace",
+    next: "Next match",
+    previous: "Previous match",
+    close: "Close",
+    matchCase: "Match case",
+    regexp: "Regular expression",
+    wholeWord: "Whole word",
+    replace: "Replace",
+    replaceAll: "Replace all",
+    select: "Select all",
+    drag: "Drag to move. Double-click to put it back.",
+    count: "{current} of {total}",
+    total: "{total}",
+    none: "No matches",
   },
   updates: {
     failed: "Couldn't check for updates. The update server may not be configured yet.",

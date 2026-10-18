@@ -30,6 +30,7 @@
   import { openInTerminal, writeHandoffFile } from "$lib/ipc/handoff";
   import { initTheme } from "$lib/theme";
   import { buildAndSetAppMenu } from "$lib/menu";
+  import { fileName, parentDir } from "$lib/path";
   import { modKey, shortcut } from "$lib/platform";
   import { checkForUpdates } from "$lib/ipc/updater";
 
@@ -185,9 +186,22 @@
       activeTabId.set(existing.id);
       return;
     }
-    const { content, meta } = await readFile(path);
-    const title = path.split("/").pop() ?? path;
-    const id = addTab({ path, title }, createDocState(content));
+    let opened;
+    try {
+      opened = await readFile(path);
+    } catch (err) {
+      const code = typeof err === "string" ? err : err instanceof Error ? err.message : "";
+      const copy = get(messages);
+      await confirm({
+        title: fileName(path),
+        message: code === "utf-8" ? copy.dialog.notUtf8 : code || copy.dialog.notUtf8,
+        kind: "warning",
+        alert: true,
+      });
+      return;
+    }
+    const { content, meta } = opened;
+    const id = addTab({ path, title: fileName(path) }, createDocState(content));
     setFileMeta(id, meta);
     addRecentFile(path);
   }
@@ -239,13 +253,6 @@
     };
   }
 
-  function directoryOf(path: string): string {
-    const slash = path.lastIndexOf("/");
-    if (slash < 0) return path;
-    if (slash === 0) return "/";
-    return path.slice(0, slash);
-  }
-
   function invokeError(err: unknown, fallback: string): string {
     if (typeof err === "string" && err.trim()) return err;
     if (err instanceof Error && err.message.trim()) return err.message;
@@ -263,11 +270,12 @@
     try {
       let filePath: string;
       if (tab.path) {
+        const target = tab.path;
         if (tab.isDirty) {
-          const saved = await writeAndMarkSaved(id, tab.path, state.doc);
+          const saved = await enqueueSave(() => writeAndMarkSaved(id, target, state.doc));
           if (!isCurrent() || !saved) return null;
         }
-        filePath = tab.path;
+        filePath = target;
       } else {
         filePath = await writeHandoffFile(id, state.doc.toString());
         if (!isCurrent()) return null;
@@ -282,7 +290,7 @@
         }
       }
       const cliText = agent.prompt === "clipboard" ? "" : instruction;
-      await openInTerminal(directoryOf(filePath), handoffArgs(agent, cliText));
+      await openInTerminal(parentDir(filePath), handoffArgs(agent, cliText));
       return null;
     } catch (err) {
       if (!isCurrent()) return null;
@@ -391,7 +399,7 @@
       return "fresh";
     }
     const copy = get(messages);
-    const name = path.split("/").pop() ?? path;
+    const name = fileName(path);
     const overwrite = await confirm({
       title: copy.dialog.changedTitle,
       message: fill(copy.dialog.overwrite, { name }),
@@ -424,6 +432,18 @@
       activeTabId.set(null);
       queueMicrotask(() => activeTabId.set(id));
     }
+  }
+
+  // One save at a time, so autosave and ⌘S cannot both ask about the same file.
+  let saveChain: Promise<unknown> = Promise.resolve();
+
+  function enqueueSave(work: () => Promise<boolean>): Promise<boolean> {
+    const run = saveChain.then(work, work);
+    saveChain = run.then(
+      () => undefined,
+      () => undefined,
+    );
+    return run;
   }
 
   // `doc` is captured before the (async) write so markSaved compares against exactly what
@@ -470,8 +490,9 @@
       path = await pickSavePath();
       if (!path) return;
     }
+    const target = path;
 
-    await writeAndMarkSaved(id, path, state.doc);
+    await enqueueSave(() => writeAndMarkSaved(id, target, state.doc));
   }
 
   async function handleSaveAs() {
@@ -483,39 +504,33 @@
     const path = await pickSavePath();
     if (!path) return;
 
-    await writeAndMarkSaved(id, path, state.doc);
+    await enqueueSave(() => writeAndMarkSaved(id, path, state.doc));
   }
 
-  // Fires on every doc change when the "Auto save" setting is on -- silently no-ops for
-  // untitled tabs rather than prompting a save dialog mid-keystroke.
-  async function handleAutoSave() {
-    const id = $activeTabId;
-    if (!id) return;
-    const tab = $tabs.find((t) => t.id === id);
-    if (!tab?.path || !tab.isDirty) return;
+  // Same checks as ⌘S. Untitled tabs are skipped so a pause does not open a save dialog.
+  function handleAutoSave(id: string) {
+    void enqueueSave(async () => {
+      try {
+        const tab = get(tabs).find((t) => t.id === id);
+        if (!tab?.path || !tab.isDirty) return false;
+        const state = editorStates.get(id);
+        if (!state) return false;
+        return await writeAndMarkSaved(id, tab.path, state.doc);
+      } catch {
+        return false;
+      }
+    });
+  }
+
+  // Debounced (1s) for the tab that changed. Untitled text is written to its scratch
+  // file and into session.json. A crash mid-typing loses at most ~1s.
+  async function handleDocChange(id: string) {
+    const tab = get(tabs).find((t) => t.id === id);
+    if (!tab?.scratchId) return;
     const state = editorStates.get(id);
-    if (!state) return;
-
-    const meta = getFileMeta(id) ?? defaultFileMeta();
-    await writeFile(tab.path, state.doc.toString(), meta);
-    markSaved(id, tab.path, state.doc);
-  }
-
-  // Debounced (1s) on every doc change for the active tab. For untitled tabs this is
-  // the crash-recovery path: content is written to a scratch file (keyed by scratchId)
-  // AND inlined into session.json via persistSessionNow. A crash mid-typing therefore
-  // loses at most ~1s of work instead of the whole buffer.
-  async function handleDocChange() {
-    const id = $activeTabId;
-    if (!id) return;
-    const tab = $tabs.find((t) => t.id === id);
-    if (!tab) return;
-    if (tab.scratchId) {
-      const state = editorStates.get(id);
-      const content = state?.doc.toString() ?? "";
-      await saveScratch(tab.scratchId, content).catch(() => {});
-      await persistSessionNow();
-    }
+    const content = state?.doc.toString() ?? "";
+    await saveScratch(tab.scratchId, content).catch(() => {});
+    await persistSessionNow();
   }
 
   function handleSelectTab(id: string) {

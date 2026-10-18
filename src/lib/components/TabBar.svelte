@@ -438,12 +438,11 @@
               <button
                 class="tab-menu-item"
                 class:active={tab.id === activeTabId}
-                class:deleted={tab.isDeleted}
                 role="menuitem"
                 onclick={() => selectFromMenu(tab.id)}
               >
                 <span class="tab-icon" aria-hidden="true"><Icon name={tab.kind === "settings" ? "settings" : "markdown"} size={13} /></span>
-                <span class="tab-menu-title">{tab.title}{tab.isDeleted ? ` ${$messages.tabs.deleted}` : ""}</span>
+                <span class="tab-menu-title">{tab.title}</span>
                 {#if tab.isDirty}
                   <span class="dirty-dot" aria-hidden="true"></span>
                 {/if}

@@ -21,10 +21,11 @@ pub struct Encoding {
 }
 
 /// Read raw bytes and detect the encoding, returning (normalized_text, encoding).
+/// Bytes that are not UTF-8 are an error, so a later save cannot replace them.
 /// Normalized = UTF-8 string with BOM stripped and CRLF collapsed to LF, plus a
 /// trailing-newline flag derived from the *original* bytes (so a file with no final
 /// newline isn't given one, and a file with one keeps it).
-pub fn decode(raw: &[u8]) -> (String, Encoding) {
+pub fn decode(raw: &[u8]) -> Result<(String, Encoding), &'static str> {
     let (bytes, has_bom) = if raw.starts_with(&BOM) {
         (&raw[3..], true)
     } else {
@@ -42,7 +43,7 @@ pub fn decode(raw: &[u8]) -> (String, Encoding) {
         LineEnding::Lf
     };
 
-    let mut text = String::from_utf8_lossy(bytes).into_owned();
+    let mut text = std::str::from_utf8(bytes).map_err(|_| "utf-8")?.to_string();
     if has_crlf {
         text = text.replace("\r\n", "\n");
     }
@@ -53,14 +54,14 @@ pub fn decode(raw: &[u8]) -> (String, Encoding) {
     // record has_trailing_newline=true; on save we re-emit "...content\r\n".
     let has_trailing_newline = text.ends_with('\n');
 
-    (
+    Ok((
         text,
         Encoding {
             line_ending,
             has_bom,
             has_trailing_newline,
         },
-    )
+    ))
 }
 
 /// Re-apply an encoding to a normalized string for writing. Ensures the trailing
@@ -76,9 +77,7 @@ pub fn encode(text: &str, enc: &Encoding) -> Vec<u8> {
     if enc.has_trailing_newline && !currently_has_trailing {
         s.push('\n');
     } else if !enc.has_trailing_newline && currently_has_trailing {
-        while s.ends_with('\n') {
-            s.pop();
-        }
+        s.pop();
     }
 
     if enc.line_ending == LineEnding::Crlf {
@@ -100,7 +99,7 @@ mod tests {
     #[test]
     fn lf_file_round_trips_as_lf() {
         let raw = b"hello\nworld\n";
-        let (text, enc) = decode(raw);
+        let (text, enc) = decode(raw).expect("utf-8");
         assert_eq!(text, "hello\nworld\n");
         assert_eq!(enc.line_ending, LineEnding::Lf);
         assert!(!enc.has_bom);
@@ -111,7 +110,7 @@ mod tests {
     #[test]
     fn crlf_file_round_trips_as_crlf() {
         let raw = b"hello\r\nworld\r\n";
-        let (text, enc) = decode(raw);
+        let (text, enc) = decode(raw).expect("utf-8");
         // Editor sees normalized LF.
         assert_eq!(text, "hello\nworld\n");
         assert_eq!(enc.line_ending, LineEnding::Crlf);
@@ -123,7 +122,7 @@ mod tests {
     #[test]
     fn bom_is_preserved_and_stripped_from_editor_view() {
         let raw = [0xEF, 0xBB, 0xBF, b'h', b'i', b'\n'];
-        let (text, enc) = decode(&raw);
+        let (text, enc) = decode(&raw).expect("utf-8");
         assert_eq!(text, "hi\n");
         assert!(enc.has_bom);
         assert_eq!(encode(&text, &enc), &raw[..]);
@@ -132,7 +131,7 @@ mod tests {
     #[test]
     fn no_trailing_newline_is_preserved() {
         let raw = b"no newline at end";
-        let (text, enc) = decode(raw);
+        let (text, enc) = decode(raw).expect("utf-8");
         assert_eq!(text, "no newline at end");
         assert!(!enc.has_trailing_newline);
         assert_eq!(encode(&text, &enc), b"no newline at end");
@@ -141,7 +140,7 @@ mod tests {
     #[test]
     fn editor_added_trailing_newline_is_stripped_on_save_if_original_had_none() {
         let raw = b"no newline";
-        let (_, enc) = decode(raw);
+        let (_, enc) = decode(raw).expect("utf-8");
         // User added a newline in the editor.
         let edited = "no newline\n";
         assert_eq!(encode(edited, &enc), b"no newline");
@@ -150,7 +149,7 @@ mod tests {
     #[test]
     fn editor_removed_trailing_newline_is_readded_on_save_if_original_had_one() {
         let raw = b"had newline\n";
-        let (_, enc) = decode(raw);
+        let (_, enc) = decode(raw).expect("utf-8");
         // User deleted the trailing newline in the editor.
         let edited = "had newline";
         assert_eq!(encode(edited, &enc), b"had newline\n");
@@ -159,10 +158,22 @@ mod tests {
     #[test]
     fn mixed_endings_classified_as_crlf_if_any_crlf_present() {
         let raw = b"line1\nline2\r\nline3\n";
-        let (text, enc) = decode(raw);
+        let (text, enc) = decode(raw).expect("utf-8");
         assert_eq!(text, "line1\nline2\nline3\n");
         assert_eq!(enc.line_ending, LineEnding::Crlf);
         // Save writes everything as CRLF.
         assert_eq!(encode(&text, &enc), b"line1\r\nline2\r\nline3\r\n");
+    }
+
+    #[test]
+    fn blank_line_at_end_survives_when_original_had_no_trailing_newline() {
+        let (_, enc) = decode(b"hello").expect("utf-8");
+        assert!(!enc.has_trailing_newline);
+        assert_eq!(encode("hello\n\n", &enc), b"hello\n");
+    }
+
+    #[test]
+    fn rejects_bytes_that_are_not_utf8() {
+        assert_eq!(decode(&[0xFF, 0xFE, b'a']).unwrap_err(), "utf-8");
     }
 }

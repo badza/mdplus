@@ -1,23 +1,8 @@
-use std::fs::File;
-use std::io::Write;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 use tauri::Manager;
 
 use crate::services::encoding::{self, Encoding, LineEnding};
-
-fn atomic_write_bytes(path: &str, content: &[u8]) -> Result<(), String> {
-    let tmp_path = format!("{path}.mdplus-tmp-{}", std::process::id());
-
-    let mut file = File::create(&tmp_path).map_err(|e| e.to_string())?;
-    file.write_all(content).map_err(|e| e.to_string())?;
-    file.sync_all().map_err(|e| e.to_string())?;
-    drop(file);
-
-    std::fs::rename(&tmp_path, path).map_err(|e| {
-        let _ = std::fs::remove_file(&tmp_path);
-        e.to_string()
-    })
-}
+use crate::services::write::atomic_write;
 
 #[derive(Debug, Clone, serde::Serialize)]
 #[serde(rename_all = "camelCase")]
@@ -83,26 +68,13 @@ pub fn save_file(
 ) -> Result<(), String> {
     let enc = parse_encoding(&line_ending, has_bom, has_trailing_newline);
     let bytes = encoding::encode(&content, &enc);
-    atomic_write_bytes(&path, &bytes)
-}
-
-#[tauri::command]
-pub fn save_file_as(
-    path: String,
-    content: String,
-    line_ending: String,
-    has_bom: bool,
-    has_trailing_newline: bool,
-) -> Result<(), String> {
-    let enc = parse_encoding(&line_ending, has_bom, has_trailing_newline);
-    let bytes = encoding::encode(&content, &enc);
-    atomic_write_bytes(&path, &bytes)
+    atomic_write(Path::new(&path), &bytes)
 }
 
 #[tauri::command]
 pub fn open_file_path(path: String) -> Result<OpenFileResult, String> {
     let raw = std::fs::read(&path).map_err(|e| e.to_string())?;
-    let (content, enc) = encoding::decode(&raw);
+    let (content, enc) = encoding::decode(&raw).map_err(|code| code.to_string())?;
     let meta = std::fs::metadata(&path).map_err(|e| e.to_string())?;
     Ok(OpenFileResult {
         content,
@@ -123,7 +95,7 @@ pub fn stat_file(path: String) -> Result<FileMeta, String> {
     // of the open path, but stat is only called on save (rare) and the file is small
     // (it's a markdown editor); the correctness win outweighs the extra read.
     let raw = std::fs::read(&path).map_err(|e| e.to_string())?;
-    let (_, enc) = encoding::decode(&raw);
+    let (_, enc) = encoding::decode(&raw).map_err(|code| code.to_string())?;
     Ok(meta_of(&meta, &enc))
 }
 
@@ -156,9 +128,8 @@ pub fn save_scratch(app: tauri::AppHandle, id: String, content: String) -> Resul
     validate_scratch_id(&id)?;
     let dir = scratch_dir(&app)?;
     let path = dir.join(&id);
-    let path = path.to_string_lossy().into_owned();
     // Scratch buffers are internal recovery state, not user files -- always LF, no BOM.
-    atomic_write_bytes(&path, content.as_bytes())
+    atomic_write(&path, content.as_bytes())
 }
 
 #[tauri::command]

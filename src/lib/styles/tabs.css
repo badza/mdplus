@@ -129,10 +129,6 @@
   box-shadow: var(--mdplus-pill-active-shadow);
 }
 
-.tab.deleted {
-  opacity: 0.5;
-}
-
 .tab-icon {
   display: inline-flex;
   align-items: center;
@@ -357,10 +353,6 @@
 .tab-menu-item.active {
   background: var(--mdplus-active);
   font-weight: 500;
-}
-
-.tab-menu-item.deleted {
-  opacity: 0.5;
 }
 
 .tab-menu-title {

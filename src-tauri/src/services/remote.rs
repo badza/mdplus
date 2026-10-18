@@ -38,6 +38,29 @@ pub fn normalize_markdown_url(input: &str) -> Result<RemoteTarget, &'static str>
     })
 }
 
+/// A public link redirected onto this machine. A link that already pointed
+/// here can still be opened.
+pub fn redirect_targets_local_machine(original: &str, next: &str) -> bool {
+    let Ok(original) = Url::parse(original) else {
+        return false;
+    };
+    let Ok(next) = Url::parse(next) else {
+        return false;
+    };
+    host_is_local(&next) && !host_is_local(&original)
+}
+
+fn host_is_local(url: &Url) -> bool {
+    match url.host() {
+        Some(url::Host::Domain(name)) => {
+            name.trim_end_matches('.').eq_ignore_ascii_case("localhost")
+        }
+        Some(url::Host::Ipv4(ip)) => ip.is_loopback() || ip.is_link_local(),
+        Some(url::Host::Ipv6(ip)) => ip.is_loopback(),
+        None => false,
+    }
+}
+
 pub fn body_too_large(len: usize) -> bool {
     len > MAX_BYTES
 }
@@ -289,5 +312,41 @@ mod tests {
         assert!(!looks_like_html("text/plain", "# Hello"));
         assert!(!body_too_large(100));
         assert!(body_too_large(MAX_BYTES + 1));
+    }
+
+    #[test]
+    fn public_redirect_onto_this_machine_is_blocked() {
+        assert!(redirect_targets_local_machine(
+            "https://example.com/a.md",
+            "http://127.0.0.1:9/secret"
+        ));
+        assert!(redirect_targets_local_machine(
+            "https://example.com/a.md",
+            "http://169.254.169.254/latest/meta-data"
+        ));
+        assert!(redirect_targets_local_machine(
+            "https://example.com/a.md",
+            "http://[::1]/a.md"
+        ));
+        assert!(redirect_targets_local_machine(
+            "https://example.com/a.md",
+            "http://localhost:8080/a.md"
+        ));
+    }
+
+    #[test]
+    fn local_fetch_and_public_redirect_stay_open() {
+        assert!(!redirect_targets_local_machine(
+            "http://127.0.0.1:8080/a.md",
+            "http://127.0.0.1:8080/b.md"
+        ));
+        assert!(!redirect_targets_local_machine(
+            "https://example.com/a.md",
+            "https://cdn.example.com/a.md"
+        ));
+        assert!(!redirect_targets_local_machine(
+            "https://example.com/a.md",
+            "http://10.1.2.3/a.md"
+        ));
     }
 }

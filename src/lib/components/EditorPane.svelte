@@ -1,7 +1,9 @@
 <script lang="ts">
   import { onMount, onDestroy } from "svelte";
   import { fade } from "svelte/transition";
+  import { findNext, findPrevious, searchPanelOpen } from "@codemirror/search";
   import { EditorView } from "@codemirror/view";
+  import { bindFindSurface, closeFind, openFind, syncFindBar } from "../editor/findPanel";
   import { editorStates, updateDirty } from "../stores/documents";
   import { setWordWrap } from "../editor/cmSetup";
   import { editorContext, editorContextCompartment } from "../editor/editorContext";
@@ -11,6 +13,7 @@
   import { resolvedTheme } from "../theme";
   import type { ViewMode } from "../ipc/settings";
   import { bindSplitScroll } from "../preview/scrollSync";
+  import FindBar from "./FindBar.svelte";
   import Icon from "./Icon.svelte";
   import PreviewPane from "./PreviewPane.svelte";
 
@@ -36,8 +39,8 @@
     viewMode?: ViewMode;
     filePath?: string | null;
     onCursorChange?: (line: number, col: number) => void;
-    onAutoSave?: () => void;
-    onDocChange?: () => void;
+    onAutoSave?: (id: string) => void;
+    onDocChange?: (id: string) => void;
     onWordCountChange?: (count: number) => void;
     onOpenRemote?: (url: string) => void;
   } = $props();
@@ -50,6 +53,8 @@
   let mountedWordWrap: boolean | null = null;
   let autoSaveTimer: ReturnType<typeof setTimeout> | undefined;
   let docChangeTimer: ReturnType<typeof setTimeout> | undefined;
+  let autoSaveFor: string | null = null;
+  let docChangeFor: string | null = null;
   const AUTO_SAVE_DEBOUNCE_MS = 800;
   const DOC_CHANGE_DEBOUNCE_MS = 1000;
   let isDocEmpty = $state(true);
@@ -72,6 +77,12 @@
   }
 
   onMount(() => {
+    bindFindSurface({
+      mode: () => viewMode,
+      article: () => previewRoot?.querySelector(".preview-article") ?? null,
+      scroller: () => previewRoot,
+    });
+    workspaceEl?.addEventListener("keydown", onWorkspaceKey);
     view = new EditorView({
       parent: container,
       dispatchTransactions: (transactions) => {
@@ -81,30 +92,66 @@
           // survive a tab switch, and keep the dirty flag O(1) via Text ref-equality.
           editorStates.set(mountedTabId, view!.state);
           if (transactions.some((tr) => tr.docChanged)) {
-            updateDirty(mountedTabId, view!.state.doc);
+            const editedId = mountedTabId;
+            updateDirty(editedId, view!.state.doc);
             reportContentMetrics();
             if (autoSave) {
+              if (autoSaveFor && autoSaveFor !== editedId) onAutoSave?.(autoSaveFor);
+              autoSaveFor = editedId;
               clearTimeout(autoSaveTimer);
-              autoSaveTimer = setTimeout(() => onAutoSave?.(), AUTO_SAVE_DEBOUNCE_MS);
+              autoSaveTimer = setTimeout(() => {
+                autoSaveFor = null;
+                onAutoSave?.(editedId);
+              }, AUTO_SAVE_DEBOUNCE_MS);
             }
             // Untitled-buffer persistence: debounce a doc-change callback so a
-            // crash mid-typing doesn't lose more than ~1s of work. The parent
-            // decides what to persist (scratch file + session.json) based on the
-            // active tab's kind.
+            // crash mid-typing doesn't lose more than ~1s of work. The id is the
+            // tab that changed. Editing a different tab flushes the previous one.
+            if (docChangeFor && docChangeFor !== editedId) onDocChange?.(docChangeFor);
+            docChangeFor = editedId;
             clearTimeout(docChangeTimer);
-            docChangeTimer = setTimeout(() => onDocChange?.(), DOC_CHANGE_DEBOUNCE_MS);
+            docChangeTimer = setTimeout(() => {
+              docChangeFor = null;
+              onDocChange?.(editedId);
+            }, DOC_CHANGE_DEBOUNCE_MS);
           }
         }
         reportCursor();
       },
     });
+    syncFindBar(view);
   });
 
   onDestroy(() => {
     clearTimeout(autoSaveTimer);
     clearTimeout(docChangeTimer);
+    workspaceEl?.removeEventListener("keydown", onWorkspaceKey);
+    bindFindSurface(null);
     view?.destroy();
   });
+
+  function onWorkspaceKey(event: KeyboardEvent) {
+    if (!view) return;
+    const target = event.target;
+    if (!(target instanceof Node) || view.dom.contains(target)) return;
+    const mod = event.metaKey || event.ctrlKey;
+    const key = event.key.toLowerCase();
+    if (mod && !event.shiftKey && !event.altKey && key === "f") {
+      event.preventDefault();
+      openFind(view);
+      return;
+    }
+    if (!searchPanelOpen(view.state)) return;
+    if (event.key === "Escape" && !mod && !event.shiftKey && !event.altKey) {
+      event.preventDefault();
+      closeFind(view);
+      return;
+    }
+    if (event.key === "F3" || (mod && !event.altKey && key === "g")) {
+      event.preventDefault();
+      (event.shiftKey ? findPrevious : findNext)(view);
+    }
+  }
 
   $effect(() => {
     const path = filePath;
@@ -125,6 +172,7 @@
       const state = editorStates.get(activeTabId);
       if (!state) return;
       view.setState(state);
+      syncFindBar(view);
       mountedTabId = activeTabId;
       mountedWordWrap = wordWrap;
       setWordWrap(view, wordWrap);
@@ -221,4 +269,5 @@
       bind:root={previewRoot}
     />
   {/if}
+  <FindBar getView={() => view} {viewMode} />
 </div>

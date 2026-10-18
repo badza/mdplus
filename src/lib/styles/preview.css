@@ -303,3 +303,20 @@
 .preview-pane .hljs-type { color: var(--mdplus-syn-code); }
 .preview-pane .hljs-variable,
 .preview-pane .hljs-template-variable { color: var(--mdplus-text); }
+
+.preview-pane:focus {
+  outline: none;
+}
+
+.preview-pane mark.md-find {
+  background: var(--mdplus-selection-match);
+  color: inherit;
+  border-radius: 2px;
+  padding: 0;
+}
+
+.preview-pane mark.md-find-current {
+  background: var(--mdplus-accent);
+  color: var(--mdplus-bg);
+  scroll-margin: 96px 0 24px;
+}
