@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>mdplus — A focused markdown editor</title>
+  <meta name="description" content="A free markdown editor for the markdown files this work is made of. PRDs, specs, plans, and the files agents read. The screen shows the document. The file stays markdown.">
+  <link rel="icon" href="logo.png" type="image/png" sizes="256x256">
+  <link rel="apple-touch-icon" href="logo.png">
+  <link rel="stylesheet" href="site.css">
+</head>
+<body>
+  <header class="nav">
+    <div class="rail nav-rail">
+      <a class="brand" href="#top"><img src="logo.png" alt="" width="28" height="28">mdplus</a>
+      <div class="downloads" data-downloads="primary">
+        <a class="btn" href="https://github.com/badza/mdplus/releases/latest">Download</a>
+      </div>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="hero rail">
+      <div class="copy">
+        <h1><span class="h1-lead">A focused markdown editor</span><span class="h1-for">for <span class="cycle" aria-hidden="true"><span class="cycle-item is-on">PRD.md</span><span class="cycle-item">Spec.md</span><span class="cycle-item">PLAN.md</span><span class="cycle-item">README.md</span><span class="cycle-item">AGENTS.md</span><span class="cycle-item">AGENTS.override.md</span><span class="cycle-item">CLAUDE.md</span><span class="cycle-item">CLAUDE.local.md</span><span class="cycle-item">GEMINI.md</span><span class="cycle-item">SKILL.md</span><span class="cycle-item">JULES.md</span><span class="cycle-item">CONVENTIONS.md</span><span class="cycle-item">copilot-instructions.md</span></span></span><span class="sr-only">PRD.md, Spec.md, PLAN.md, README.md, AGENTS.md, AGENTS.override.md, CLAUDE.md, CLAUDE.local.md, GEMINI.md, SKILL.md, JULES.md, CONVENTIONS.md, and copilot-instructions.md.</span></h1>
+        <p class="deck">For those files, and the rest of your markdown. Free for Mac, Windows, and Linux.</p>
+        <p class="deck deck-next">The screen shows the document. The line you are editing shows the markdown, and the file stays markdown. A red mark on the tab means it is not saved yet.</p>
+        <div class="downloads" data-downloads="primary">
+          <a class="btn" href="https://github.com/badza/mdplus/releases/latest">Download</a>
+        </div>
+      </div>
+      <figure class="shot">
+        <img src="shots/write.png" alt="PRD.md open and unsaved in mdplus. The line being edited shows the markdown. AGENTS.md and Spec.md are the other tabs." width="1180" height="792">
+      </figure>
+    </section>
+
+    <section class="chapter rail">
+      <div class="copy">
+        <h2>The diagram is in the file.</h2>
+        <p>The flowchart is a mermaid block in the markdown, not a picture someone exported. Move the slider to see this note as a page.</p>
+      </div>
+      <figure class="compare">
+        <div class="compare-frame">
+          <img src="shots/source.png" alt="The checkout note in markdown, with the mermaid flowchart written out." width="1180" height="792">
+          <img class="compare-page" src="shots/read.png" alt="" width="1180" height="792">
+        </div>
+        <label class="compare-control">
+          <span>Markdown</span>
+          <input type="range" id="compare" min="0" max="100" value="0" aria-label="Show how the note looks as a page">
+          <span>The page</span>
+        </label>
+      </figure>
+    </section>
+
+    <section class="chapter rail">
+      <div class="copy">
+        <h2>The markdown next to the page.</h2>
+        <p>Split puts the file on the left and the document on the right. Every mark stays visible, so a bad link or a wrong heading is easy to find.</p>
+      </div>
+      <figure class="shot">
+        <img src="shots/split.png" alt="Full markdown on the left, including the link and the marks. The document is on the right." width="1180" height="792">
+      </figure>
+      <div class="aside">
+        <div class="copy">
+          <h2>The command palette.</h2>
+          <p>Open a file from disk or from a link, save it, or hand it off. Handoff sends the open file, or a selection, to Claude, Grok, Codex, or another agent you already run.</p>
+          <p>Auto save writes a file that already has a path. Next launch can reopen the same tabs.</p>
+        </div>
+        <figure class="shot shot-palette">
+          <img src="shots/palette.png" alt="The command palette. Handoff is listed with New Tab, Open File, Open from URL, Save, Save As, and Close Tab." width="1044" height="607">
+        </figure>
+      </div>
+    </section>
+
+    <section class="chapter rail">
+      <div class="copy">
+        <h2>The same document, in the theme you want.</h2>
+        <p>Auto follows your system. Click a theme to see this note in it.</p>
+      </div>
+      <div class="themes" role="group" aria-label="Themes">
+        <button type="button" data-theme="auto" aria-pressed="false"><i class="swatch auto"></i>Auto</button>
+        <button type="button" data-theme="light" aria-pressed="false"><i class="swatch" style="background:#ffffff"></i>Light</button>
+        <button type="button" data-theme="paper" aria-pressed="false"><i class="swatch" style="background:#fbf7f0"></i>Paper</button>
+        <button type="button" data-theme="fog" aria-pressed="false"><i class="swatch" style="background:#f7f9fb"></i>Fog</button>
+        <button type="button" data-theme="dark" aria-pressed="false"><i class="swatch" style="background:#1e1e1e"></i>Dark</button>
+        <button type="button" data-theme="ink" aria-pressed="false"><i class="swatch" style="background:#1a212a"></i>Ink</button>
+        <button type="button" data-theme="moss" aria-pressed="false"><i class="swatch" style="background:#1c2520"></i>Moss</button>
+        <button type="button" data-theme="dusk" aria-pressed="true"><i class="swatch" style="background:#261f1b"></i>Dusk</button>
+      </div>
+      <figure class="shot">
+        <img id="theme-shot" src="shots/dusk.png" alt="The same document in the Dusk theme." width="1180" height="792">
+      </figure>
+    </section>
+
+    <section class="close rail" id="get">
+      <img class="mark-logo" src="logo.png" alt="" width="72" height="72">
+      <h2>One window.</h2>
+      <p>Notepad++ was the role model. One window, the file in front of you, and nothing else in the way.</p>
+      <p>It uses the system web view, with no account, no plugin host, and no second browser.</p>
+      <p class="quiet">Hand the open file, or a selection, to Claude, Grok, Codex, or the agent you already run.</p>
+      <div class="downloads" data-downloads="all">
+        <a class="btn" href="https://github.com/badza/mdplus/releases/latest">Latest release</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="foot">
+    <div class="rail foot-rail">
+      <a class="brand" href="#top"><img src="logo.png" alt="" width="22" height="22">mdplus</a>
+      <p>A free markdown editor for Mac, Windows, and Linux.</p>
+    </div>
+  </footer>
+
+  <script>
+    (function () {
+      var cycle = document.querySelector(".cycle");
+      if (cycle && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        var items = cycle.querySelectorAll(".cycle-item");
+        var current = 0;
+        function show(next) {
+          next = (next + items.length) % items.length;
+          items.forEach(function (el, idx) {
+            el.classList.remove("is-on", "is-out");
+            if (idx === next) el.classList.add("is-on");
+            else if (idx === current) el.classList.add("is-out");
+          });
+          var previous = current;
+          current = next;
+          window.setTimeout(function () {
+            if (items[previous] !== items[current]) items[previous].classList.remove("is-out");
+          }, 520);
+        }
+        window.setInterval(function () { show(current + 1); }, 2200);
+      }
+      var compare = document.getElementById("compare");
+      var frame = document.querySelector(".compare-frame");
+      function reveal() {
+        var n = Number(compare.value);
+        frame.style.setProperty("--reveal", n + "%");
+        frame.classList.toggle("is-edge", n < 1 || n > 99);
+        compare.setAttribute("aria-valuetext", n < 8 ? "Markdown" : n > 92 ? "The page" : n + "% of the page");
+      }
+      compare.addEventListener("input", reveal);
+      reveal();
+      var shot = document.getElementById("theme-shot");
+      var buttons = document.querySelectorAll(".themes button");
+      var alts = {
+        auto: "The same document with Auto, shown in Paper.",
+        light: "The same document in the Light theme.",
+        paper: "The same document in the Paper theme.",
+        fog: "The same document in the Fog theme.",
+        dark: "The same document in the Dark theme.",
+        ink: "The same document in the Ink theme.",
+        moss: "The same document in the Moss theme.",
+        dusk: "The same document in the Dusk theme."
+      };
+      if (!shot || !buttons.length) return;
+      buttons.forEach(function (button) {
+        button.addEventListener("click", function () {
+          var name = button.getAttribute("data-theme") || "dusk";
+          var file = name === "auto" ? "paper" : name;
+          shot.src = "shots/" + file + ".png";
+          shot.alt = alts[name] || alts.dusk;
+          buttons.forEach(function (other) {
+            other.setAttribute("aria-pressed", other === button ? "true" : "false");
+          });
+        });
+      });
+    })();
+
+    function osOf(name) {
+      const n = name.toLowerCase();
+      if (n.endsWith(".dmg") || n.endsWith(".app.tar.gz")) return "Mac";
+      if (n.endsWith(".exe") || n.endsWith(".msi") || n.includes("nsis")) return "Windows";
+      if (n.endsWith(".appimage") || n.endsWith(".deb") || n.endsWith(".rpm")) return "Linux";
+      return "";
+    }
+
+    function labelOf(name) {
+      const os = osOf(name);
+      const n = name.toLowerCase();
+      const arm = n.includes("aarch64") || n.includes("arm64");
+      const intel = n.includes("x86_64") || n.includes("amd64") || n.includes("x64");
+      if (os === "Mac" && arm) return "Mac (Apple silicon)";
+      if (os === "Mac" && intel) return "Mac (Intel)";
+      if (os === "Windows" && arm) return "Windows (ARM)";
+      if (os === "Windows" && intel) return "Windows (64-bit)";
+      if (os === "Linux" && arm) return "Linux (ARM)";
+      if (os === "Linux" && intel) return "Linux (64-bit)";
+      return os;
+    }
+
+    function rankOf(name) {
+      return /\.(dmg|exe|msi|appimage|deb|rpm)$/i.test(name) ? 0 : 1;
+    }
+
+    fetch("https://api.github.com/repos/badza/mdplus/releases/latest")
+      .then((res) => (res.ok ? res.json() : Promise.reject(res)))
+      .then((release) => {
+        const assets = (release.assets || []).filter((asset) => asset.name !== "latest.json" && !asset.name.endsWith(".sig") && osOf(asset.name));
+        const byLabel = new Map();
+        for (const asset of assets) {
+          const label = labelOf(asset.name);
+          const prev = byLabel.get(label);
+          if (!prev || rankOf(asset.name) < rankOf(prev.name)) byLabel.set(label, asset);
+        }
+        for (const os of ["Mac", "Windows", "Linux"]) {
+          if ([...byLabel.keys()].some((label) => label.startsWith(os + " ("))) byLabel.delete(os);
+        }
+        const chosen = [...byLabel.values()];
+        if (!chosen.length) return;
+        const version = String(release.tag_name || "").replace(/^v/, "");
+        for (const slot of document.querySelectorAll('[data-downloads="primary"]')) {
+          const link = document.createElement("a");
+          link.className = "btn";
+          link.href = chosen[0].browser_download_url;
+          link.textContent = version ? "Download " + version : "Download";
+          slot.replaceChildren(link);
+        }
+        for (const slot of document.querySelectorAll('[data-downloads="all"]')) {
+          slot.replaceChildren();
+          for (const asset of chosen) {
+            const link = document.createElement("a");
+            link.className = "btn";
+            link.href = asset.browser_download_url;
+            const label = labelOf(asset.name);
+            link.textContent = version ? "Download " + version + " for " + label : "Download for " + label;
+            slot.appendChild(link);
+          }
+          if (release.html_url) {
+            const notes = document.createElement("a");
+            notes.className = "notes";
+            notes.href = release.html_url;
+            notes.textContent = "Release notes";
+            slot.appendChild(notes);
+          }
+        }
+      })
+      .catch(() => {});
+  </script>
+</body>
+</html>
