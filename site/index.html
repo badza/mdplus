@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>mdplus — A focused markdown editor</title>
-  <meta name="description" content="A free markdown editor for Mac, Windows, and Linux. You see the document. The line you are editing shows its markdown. The file you save is still markdown.">
+  <meta name="description" content="You read a page. The line you're on still shows the markdown, and the file you save stays markdown. Free on Mac, Windows, and Linux.">
   <link rel="icon" href="logo.png" type="image/png" sizes="256x256">
   <link rel="apple-touch-icon" href="logo.png">
   <link rel="stylesheet" href="site.css">
@@ -13,36 +13,38 @@
   <header class="nav">
     <div class="rail nav-rail">
       <a class="brand" href="#top"><img src="logo.png" alt="" width="28" height="28">mdplus</a>
-      <div class="downloads" data-downloads="primary">
-        <a class="btn" href="https://github.com/badza/mdplus/releases/latest">Download</a>
+      <div class="nav-end">
+        <a class="nav-github" href="https://github.com/badza/mdplus">GitHub</a>
+        <div class="downloads" data-downloads="primary">
+          <a class="btn" href="https://github.com/badza/mdplus/releases/latest">Download</a>
+        </div>
       </div>
     </div>
   </header>
 
   <main id="top">
     <section class="hero rail">
-      <div class="copy">
-        <h1><span class="h1-lead">A focused markdown editor</span><span class="h1-for">for <span class="cycle" aria-hidden="true"><span class="cycle-item is-on">PRD.md</span><span class="cycle-item">Spec.md</span><span class="cycle-item">PLAN.md</span><span class="cycle-item">README.md</span><span class="cycle-item">AGENTS.md</span><span class="cycle-item">AGENTS.override.md</span><span class="cycle-item">CLAUDE.md</span><span class="cycle-item">CLAUDE.local.md</span><span class="cycle-item">GEMINI.md</span><span class="cycle-item">SKILL.md</span><span class="cycle-item">JULES.md</span><span class="cycle-item">CONVENTIONS.md</span><span class="cycle-item">copilot-instructions.md</span></span></span><span class="sr-only">PRD.md, Spec.md, PLAN.md, README.md, AGENTS.md, AGENTS.override.md, CLAUDE.md, CLAUDE.local.md, GEMINI.md, SKILL.md, JULES.md, CONVENTIONS.md, and copilot-instructions.md.</span></h1>
-        <p class="deck">Free for Mac, Windows, and Linux. You see the document. The line you are editing shows its markdown, and the file you save is still markdown.</p>
-        <p class="deck deck-next">A red mark on the tab means it is not saved yet.</p>
+      <h1><span class="h1-lead">A focused markdown editor</span><span class="h1-for">for <span class="cycle" aria-hidden="true"><span class="cycle-item is-on">PRD.md</span><span class="cycle-item">Spec.md</span><span class="cycle-item">PLAN.md</span><span class="cycle-item">README.md</span><span class="cycle-item">AGENTS.md</span><span class="cycle-item">AGENTS.override.md</span><span class="cycle-item">CLAUDE.md</span><span class="cycle-item">CLAUDE.local.md</span><span class="cycle-item">GEMINI.md</span><span class="cycle-item">SKILL.md</span><span class="cycle-item">JULES.md</span><span class="cycle-item">CONVENTIONS.md</span><span class="cycle-item">copilot-instructions.md</span></span></span><span class="sr-only">PRD.md, Spec.md, PLAN.md, README.md, AGENTS.md, AGENTS.override.md, CLAUDE.md, CLAUDE.local.md, GEMINI.md, SKILL.md, JULES.md, CONVENTIONS.md, and copilot-instructions.md.</span></h1>
+      <p class="deck">You read a page. The line you're on still shows the markdown, and the file you save stays markdown.</p>
+      <p class="deck deck-next">Free on Mac, Windows, and Linux. A red dot on the tab means it isn't saved yet.</p>
+      <div class="actions">
         <div class="downloads" data-downloads="primary">
           <a class="btn" href="https://github.com/badza/mdplus/releases/latest">Download</a>
         </div>
+        <a class="btn btn-quiet" href="#note">Read the note</a>
       </div>
-      <figure class="shot">
-        <img src="shots/write.png" alt="PRD.md open and unsaved in mdplus. The line being edited shows the markdown. AGENTS.md and Spec.md are the other tabs." width="1180" height="792">
+      <figure class="hero-media">
+        <img src="shots/media/write.png" alt="PRD.md open in mdplus. The page is written out, and the line being edited still shows the markdown. A red dot marks the unsaved tab." width="1280" height="800">
       </figure>
     </section>
 
-    <section class="chapter rail">
-      <div class="copy">
-        <h2>The diagram is in the file.</h2>
-        <p>The flowchart is a mermaid block in the note. Move the slider and the same file reads as a page.</p>
-      </div>
-      <figure class="compare">
+    <section class="block rail" id="note">
+      <h2>The diagram is in the file.</h2>
+      <p>That flowchart is a mermaid block. Slide across and you're reading the same note as a page.</p>
+      <figure class="frame">
         <div class="compare-frame">
-          <img src="shots/source.png" alt="The checkout note in markdown, with the mermaid flowchart written out." width="1180" height="792">
-          <img class="compare-page" src="shots/read.png" alt="" width="1180" height="792">
+          <img src="shots/media/source.png" alt="The checkout note as markdown, with the mermaid flowchart written out." width="1280" height="800">
+          <img class="compare-page" src="shots/media/read.png" alt="" width="1280" height="800">
         </div>
         <label class="compare-control">
           <span>Markdown</span>
@@ -52,52 +54,46 @@
       </figure>
     </section>
 
-    <section class="chapter rail">
-      <div class="copy">
-        <h2>The markdown next to the page.</h2>
-        <p>Split shows the markdown on the left and the document on the right. The link, the bold, and the code stay written out, so you can find the line that looks wrong.</p>
-      </div>
-      <figure class="shot">
-        <img src="shots/split.png" alt="Full markdown on the left, including the link and the marks. The document is on the right." width="1180" height="792">
+    <section class="block rail" id="split">
+      <h2>The file on the left. The page on the right.</h2>
+      <p>The link, the bold, and the code are still right there, so you can find the line that looks wrong.</p>
+      <figure class="frame">
+        <img src="shots/media/split.png" alt="Markdown on the left, the page on the right, both showing the same checkout note." width="1280" height="800">
       </figure>
-      <div class="aside">
-        <div class="copy">
-          <h2>The command palette.</h2>
-          <p>New tab, open, save, and handoff are the first commands. Handoff sends the open file, or a selection, to Claude, Grok, Codex, or another agent you already run.</p>
-          <p>If the file already has a path, mdplus saves it while you work. The next launch can reopen the same tabs.</p>
-        </div>
-        <figure class="shot shot-palette">
-          <img src="shots/palette.png" alt="The command palette. Handoff is listed with New Tab, Open File, Open from URL, Save, Save As, and Close Tab." width="1044" height="607">
-        </figure>
-      </div>
     </section>
 
-    <section class="chapter rail">
-      <div class="copy">
-        <h2>Choose a theme for this note.</h2>
-        <p>Auto follows your system. This one is Dusk.</p>
-      </div>
-      <div class="themes" role="group" aria-label="Themes">
-        <button type="button" data-theme="auto" aria-pressed="false"><i class="swatch auto"></i>Auto</button>
-        <button type="button" data-theme="light" aria-pressed="false"><i class="swatch" style="background:#ffffff"></i>Light</button>
-        <button type="button" data-theme="paper" aria-pressed="false"><i class="swatch" style="background:#fbf7f0"></i>Paper</button>
-        <button type="button" data-theme="fog" aria-pressed="false"><i class="swatch" style="background:#f7f9fb"></i>Fog</button>
-        <button type="button" data-theme="dark" aria-pressed="false"><i class="swatch" style="background:#1e1e1e"></i>Dark</button>
-        <button type="button" data-theme="ink" aria-pressed="false"><i class="swatch" style="background:#1a212a"></i>Ink</button>
-        <button type="button" data-theme="moss" aria-pressed="false"><i class="swatch" style="background:#1c2520"></i>Moss</button>
-        <button type="button" data-theme="dusk" aria-pressed="true"><i class="swatch" style="background:#261f1b"></i>Dusk</button>
-      </div>
-      <figure class="shot">
-        <img id="theme-shot" src="shots/dusk.png" alt="The same document in the Dusk theme." width="1180" height="792">
+    <section class="block rail">
+      <h2>Open, save, hand it off.</h2>
+      <p>Handoff sends the open file, or just a selection, to Claude, Grok, Codex, or another agent you already use.</p>
+      <p>After the first save, it keeps saving while you work. Open the app again and those tabs can still be there.</p>
+      <figure class="frame">
+        <img src="shots/media/palette.png" alt="The command palette over the note. Handoff is listed with New Tab, Open File, Open from URL, Save, Save As, and Close Tab." width="1280" height="800">
+      </figure>
+    </section>
+
+    <section class="block rail" id="themes">
+      <h2>Give this note a theme.</h2>
+      <p>Auto follows your system. This one is Dusk.</p>
+        <div class="themes" role="group" aria-label="Themes">
+          <button type="button" data-theme="auto" aria-pressed="false"><i class="swatch auto"></i>Auto</button>
+          <button type="button" data-theme="light" aria-pressed="false"><i class="swatch" style="background:#ffffff"></i>Light</button>
+          <button type="button" data-theme="paper" aria-pressed="false"><i class="swatch" style="background:#fbf7f0"></i>Paper</button>
+          <button type="button" data-theme="fog" aria-pressed="false"><i class="swatch" style="background:#f7f9fb"></i>Fog</button>
+          <button type="button" data-theme="dark" aria-pressed="false"><i class="swatch" style="background:#1e1e1e"></i>Dark</button>
+          <button type="button" data-theme="ink" aria-pressed="false"><i class="swatch" style="background:#1a212a"></i>Ink</button>
+          <button type="button" data-theme="moss" aria-pressed="false"><i class="swatch" style="background:#1c2520"></i>Moss</button>
+          <button type="button" data-theme="dusk" aria-pressed="true"><i class="swatch" style="background:#261f1b"></i>Dusk</button>
+        </div>
+      <figure class="frame">
+        <img id="theme-shot" src="shots/media/dusk.png" alt="The same note in the Dusk theme." width="1280" height="800">
       </figure>
     </section>
 
     <section class="close rail" id="get">
       <img class="mark-logo" src="logo.png" alt="" width="72" height="72">
       <h2>One window.</h2>
-      <p>Notepad++ was the role model. One window, the file in front of you, and nothing else in the way.</p>
-      <p>It uses the system web view, with no account, no plugin host, and no second browser.</p>
-      <p class="quiet">Hand the open file, or a selection, to Claude, Grok, Codex, or the agent you already run.</p>
+      <p>Notepad++ was the model. The file in front of you, and nothing else in the way.</p>
+      <p>No account. No plugins. It uses the web view that came with your computer, instead of bringing its own browser.</p>
       <div class="downloads" data-downloads="all">
         <a class="btn" href="https://github.com/badza/mdplus/releases/latest">Latest release</a>
       </div>
@@ -107,7 +103,7 @@
   <footer class="foot">
     <div class="rail foot-rail">
       <a class="brand" href="#top"><img src="logo.png" alt="" width="22" height="22">mdplus</a>
-      <p>A free markdown editor for Mac, Windows, and Linux.</p>
+      <p>Free for Mac, Windows, and Linux.</p>
     </div>
   </footer>
 
@@ -131,6 +127,11 @@
           }, 520);
         }
         window.setInterval(function () { show(current + 1); }, 2600);
+      }
+      var heroVideo = document.querySelector(".hero-media video");
+      if (heroVideo && window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        heroVideo.removeAttribute("autoplay");
+        heroVideo.pause();
       }
       var compare = document.getElementById("compare");
       var frame = document.querySelector(".compare-frame");
@@ -164,7 +165,7 @@
           var file = name === "auto" ? "paper" : name;
           var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
           function apply() {
-            shot.src = "shots/" + file + ".png";
+            shot.src = "shots/media/" + file + ".png";
             shot.alt = alts[name] || alts.dusk;
             buttons.forEach(function (other) {
               other.setAttribute("aria-pressed", other === button ? "true" : "false");
