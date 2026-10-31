@@ -3,8 +3,10 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>mdplus — A focused markdown editor</title>
-  <meta name="description" content="You read a page. The line you're on still shows the markdown, and the file you save stays markdown. Free on Mac, Windows, and Linux.">
+  <title>MDPlus — A free, open-source Markdown editor</title>
+  <meta name="description" content="A free, open-source Markdown editor for people who'd rather write than fiddle. No account, no subscription, no nag screens. Your files stay on your machine.">
+  <meta property="og:title" content="MDPlus — A free, open-source Markdown editor">
+  <meta property="og:description" content="A free, open-source Markdown editor for people who'd rather write than fiddle. No account, no subscription, no nag screens. Your files stay on your machine.">
   <link rel="icon" href="logo.png" type="image/png" sizes="256x256">
   <link rel="apple-touch-icon" href="logo.png">
   <link rel="stylesheet" href="site.css">
@@ -15,7 +17,7 @@
       <a class="brand" href="#top"><img src="logo.png" alt="" width="28" height="28">mdplus</a>
       <div class="nav-end">
         <a class="nav-github" href="https://github.com/badza/mdplus">GitHub</a>
-        <div class="downloads" data-downloads="primary">
+        <div class="downloads" data-downloads="nav">
           <a class="btn" href="https://github.com/badza/mdplus/releases/latest">Download</a>
         </div>
       </div>
@@ -24,166 +26,63 @@
 
   <main id="top">
     <section class="hero rail">
-      <h1><span class="h1-lead">A focused markdown editor</span><span class="h1-for">for <span class="cycle" aria-hidden="true"><span class="cycle-item is-on">PRD.md</span><span class="cycle-item">Spec.md</span><span class="cycle-item">PLAN.md</span><span class="cycle-item">README.md</span><span class="cycle-item">AGENTS.md</span><span class="cycle-item">AGENTS.override.md</span><span class="cycle-item">CLAUDE.md</span><span class="cycle-item">CLAUDE.local.md</span><span class="cycle-item">GEMINI.md</span><span class="cycle-item">SKILL.md</span><span class="cycle-item">JULES.md</span><span class="cycle-item">CONVENTIONS.md</span><span class="cycle-item">copilot-instructions.md</span></span></span><span class="sr-only">PRD.md, Spec.md, PLAN.md, README.md, AGENTS.md, AGENTS.override.md, CLAUDE.md, CLAUDE.local.md, GEMINI.md, SKILL.md, JULES.md, CONVENTIONS.md, and copilot-instructions.md.</span></h1>
-      <p class="deck">You read a page. The line you're on still shows the markdown, and the file you save stays markdown.</p>
-      <p class="deck deck-next">Free on Mac, Windows, and Linux. A red dot on the tab means it isn't saved yet.</p>
+      <h1>A Markdown editor that gets out of your way.</h1>
+      <p class="deck">MDPlus is a free, open-source Markdown editor for people who'd rather write than fiddle. No account. No subscription. No nag screens. Just you and your text.</p>
       <div class="actions">
-        <div class="downloads" data-downloads="primary">
-          <a class="btn" href="https://github.com/badza/mdplus/releases/latest">Download</a>
-        </div>
-        <a class="btn btn-quiet" href="#note">Read the note</a>
+        <a class="btn" data-download href="https://github.com/badza/mdplus/releases/latest">Download it — it's free</a>
+        <a class="btn btn-quiet" href="https://github.com/badza/mdplus">See the source on GitHub</a>
       </div>
-      <figure class="hero-media">
-        <img src="shots/media/write.png" alt="PRD.md open in mdplus. The page is written out, and the line being edited still shows the markdown. A red dot marks the unsaved tab." width="1280" height="800">
-      </figure>
+      <p class="trust">Open source · Works offline · Your files stay on your machine</p>
     </section>
 
-    <section class="block rail" id="note">
-      <h2>The diagram is in the file.</h2>
-      <p>That flowchart is a mermaid block. Slide across and you're reading the same note as a page.</p>
-      <figure class="frame">
-        <div class="compare-frame">
-          <img src="shots/media/source.png" alt="The checkout note as markdown, with the mermaid flowchart written out." width="1280" height="800">
-          <img class="compare-page" src="shots/media/read.png" alt="" width="1280" height="800">
-        </div>
-        <label class="compare-control">
-          <span>Markdown</span>
-          <input type="range" id="compare" min="0" max="100" value="0" aria-label="Show how the note looks as a page">
-          <span>The page</span>
-        </label>
-      </figure>
+    <section class="block rail" id="features">
+      <h2 class="h-label">What you actually get</h2>
+      <div class="cards">
+        <article class="card">
+          <h3>Write first</h3>
+          <p>The cursor is where you left it. The formatting is out of the way until you need it. No sidebars screaming for attention, no toolbars with forty buttons you'll never touch. Just the words and the syntax that does the work.</p>
+        </article>
+        <article class="card">
+          <h3>Your files, your disk</h3>
+          <p>Everything saves locally as plain <code>.md</code> files — the kind any editor, any app, any human can open in twenty years. No proprietary format, no cloud lock-in, no "export" button holding your work hostage.</p>
+        </article>
+        <article class="card">
+          <h3>The shortcuts you already know</h3>
+          <p>Bold, italic, headings, lists, links, tables, code blocks. If you've used Markdown before, you're already fluent. If you haven't, you'll be fluent by lunch.</p>
+        </article>
+        <article class="card">
+          <h3>Open source, for real</h3>
+          <p>The whole thing lives on GitHub. Read the code, file a bug, open a pull request, or fork it and make it yours. That's not a marketing slogan — it's the actual license.</p>
+        </article>
+      </div>
     </section>
 
-    <section class="block rail" id="split">
-      <h2>The file on the left. The page on the right.</h2>
-      <p>The link, the bold, and the code are still right there, so you can find the line that looks wrong.</p>
-      <figure class="frame">
-        <img src="shots/media/split.png" alt="Markdown on the left, the page on the right, both showing the same checkout note." width="1280" height="800">
-      </figure>
-    </section>
-
-    <section class="block rail">
-      <h2>Open, save, hand it off.</h2>
-      <p>Handoff sends the open file, or just a selection, to Claude, Grok, Codex, or another agent you already use.</p>
-      <p>After the first save, it keeps saving while you work. Open the app again and those tabs can still be there.</p>
-      <figure class="frame">
-        <img src="shots/media/palette.png" alt="The command palette over the note. Handoff is listed with New Tab, Open File, Open from URL, Save, Save As, and Close Tab." width="1280" height="800">
-      </figure>
-    </section>
-
-    <section class="block rail" id="themes">
-      <h2>Give this note a theme.</h2>
-      <p>Auto follows your system. This one is Dusk.</p>
-        <div class="themes" role="group" aria-label="Themes">
-          <button type="button" data-theme="auto" aria-pressed="false"><i class="swatch auto"></i>Auto</button>
-          <button type="button" data-theme="light" aria-pressed="false"><i class="swatch" style="background:#ffffff"></i>Light</button>
-          <button type="button" data-theme="paper" aria-pressed="false"><i class="swatch" style="background:#fbf7f0"></i>Paper</button>
-          <button type="button" data-theme="fog" aria-pressed="false"><i class="swatch" style="background:#f7f9fb"></i>Fog</button>
-          <button type="button" data-theme="dark" aria-pressed="false"><i class="swatch" style="background:#1e1e1e"></i>Dark</button>
-          <button type="button" data-theme="ink" aria-pressed="false"><i class="swatch" style="background:#1a212a"></i>Ink</button>
-          <button type="button" data-theme="moss" aria-pressed="false"><i class="swatch" style="background:#1c2520"></i>Moss</button>
-          <button type="button" data-theme="dusk" aria-pressed="true"><i class="swatch" style="background:#261f1b"></i>Dusk</button>
-        </div>
-      <figure class="frame">
-        <img id="theme-shot" src="shots/media/dusk.png" alt="The same note in the Dusk theme." width="1280" height="800">
-      </figure>
+    <section class="block rail" id="why">
+      <h2>Why another Markdown editor?</h2>
+      <p>Fair question. The Markdown editor market is crowded — there are bigger teams, shinier apps, and feature lists long enough to scroll. We're not trying to beat them.</p>
+      <p>We just wanted a small editor that opens fast, respects your files, doesn't want your email, and doesn't upsell you on features that should've been there in the first place. So we built one.</p>
+      <p>MDPlus is free. It's open source. That's the whole pitch.</p>
     </section>
 
     <section class="close rail" id="get">
-      <img class="mark-logo" src="logo.png" alt="" width="72" height="72">
-      <h2>One window.</h2>
-      <p>Notepad++ was the model. The file in front of you, and nothing else in the way.</p>
-      <p>No account. No plugins. It uses the web view that came with your computer, instead of bringing its own browser.</p>
-      <div class="downloads" data-downloads="all">
-        <a class="btn" href="https://github.com/badza/mdplus/releases/latest">Latest release</a>
+      <h2>Give it ten minutes.</h2>
+      <p>If it doesn't fit how you write, uninstall it. We'll still be here.</p>
+      <p>If it does, tell a friend — that's the only marketing budget we have.</p>
+      <div class="downloads">
+        <a class="btn" data-download href="https://github.com/badza/mdplus/releases/latest">Download MDPlus</a>
       </div>
     </section>
   </main>
 
   <footer class="foot">
-    <div class="rail foot-rail">
-      <a class="brand" href="#top"><img src="logo.png" alt="" width="22" height="22">mdplus</a>
-      <p>Free for Mac, Windows, and Linux.</p>
+    <div class="rail foot-rows">
+      <p>It's free, and it stays free.</p>
+      <p>File a bug or open a pull request on <a href="https://github.com/badza/mdplus">GitHub</a>.</p>
+      <p>No analytics. The app doesn't ask for your email.</p>
     </div>
   </footer>
 
   <script>
-    (function () {
-      var cycle = document.querySelector(".cycle");
-      if (cycle && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-        var items = cycle.querySelectorAll(".cycle-item");
-        var current = 0;
-        function show(next) {
-          next = (next + items.length) % items.length;
-          items.forEach(function (el, idx) {
-            el.classList.remove("is-on", "is-out");
-            if (idx === next) el.classList.add("is-on");
-            else if (idx === current) el.classList.add("is-out");
-          });
-          var previous = current;
-          current = next;
-          window.setTimeout(function () {
-            if (items[previous] !== items[current]) items[previous].classList.remove("is-out");
-          }, 520);
-        }
-        window.setInterval(function () { show(current + 1); }, 2600);
-      }
-      var heroVideo = document.querySelector(".hero-media video");
-      if (heroVideo && window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-        heroVideo.removeAttribute("autoplay");
-        heroVideo.pause();
-      }
-      var compare = document.getElementById("compare");
-      var frame = document.querySelector(".compare-frame");
-      function reveal() {
-        var n = Number(compare.value);
-        var value = n + "%";
-        frame.style.setProperty("--reveal", value);
-        compare.style.setProperty("--reveal", value);
-        frame.classList.toggle("is-edge", n < 1 || n > 99);
-        compare.setAttribute("aria-valuetext", n < 8 ? "Markdown" : n > 92 ? "The page" : n + "% of the page");
-      }
-      compare.addEventListener("input", reveal);
-      reveal();
-      var shot = document.getElementById("theme-shot");
-      var buttons = document.querySelectorAll(".themes button");
-      var alts = {
-        auto: "The same document with Auto, shown in Paper.",
-        light: "The same document in the Light theme.",
-        paper: "The same document in the Paper theme.",
-        fog: "The same document in the Fog theme.",
-        dark: "The same document in the Dark theme.",
-        ink: "The same document in the Ink theme.",
-        moss: "The same document in the Moss theme.",
-        dusk: "The same document in the Dusk theme."
-      };
-      if (!shot || !buttons.length) return;
-      buttons.forEach(function (button) {
-        button.addEventListener("click", function () {
-          if (button.getAttribute("aria-pressed") === "true") return;
-          var name = button.getAttribute("data-theme") || "dusk";
-          var file = name === "auto" ? "paper" : name;
-          var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-          function apply() {
-            shot.src = "shots/media/" + file + ".png";
-            shot.alt = alts[name] || alts.dusk;
-            buttons.forEach(function (other) {
-              other.setAttribute("aria-pressed", other === button ? "true" : "false");
-            });
-          }
-          if (reduce) {
-            apply();
-            return;
-          }
-          shot.classList.add("is-swap");
-          window.setTimeout(function () {
-            apply();
-            window.setTimeout(function () { shot.classList.remove("is-swap"); }, 30);
-          }, 180);
-        });
-      });
-    })();
-
     function osOf(name) {
       const n = name.toLowerCase();
       if (n.endsWith(".dmg") || n.endsWith(".app.tar.gz")) return "Mac";
@@ -226,30 +125,13 @@
         const chosen = [...byLabel.values()];
         if (!chosen.length) return;
         const version = String(release.tag_name || "").replace(/^v/, "");
-        for (const slot of document.querySelectorAll('[data-downloads="primary"]')) {
-          const link = document.createElement("a");
-          link.className = "btn";
-          link.href = chosen[0].browser_download_url;
+        const href = chosen[0].browser_download_url;
+        for (const link of document.querySelectorAll("[data-download]")) link.href = href;
+        for (const slot of document.querySelectorAll('[data-downloads="nav"]')) {
+          const link = slot.querySelector("a");
+          if (!link) continue;
+          link.href = href;
           link.textContent = version ? "Download " + version : "Download";
-          slot.replaceChildren(link);
-        }
-        for (const slot of document.querySelectorAll('[data-downloads="all"]')) {
-          slot.replaceChildren();
-          for (const asset of chosen) {
-            const link = document.createElement("a");
-            link.className = "btn";
-            link.href = asset.browser_download_url;
-            const label = labelOf(asset.name);
-            link.textContent = version ? "Download " + version + " for " + label : "Download for " + label;
-            slot.appendChild(link);
-          }
-          if (release.html_url) {
-            const notes = document.createElement("a");
-            notes.className = "notes";
-            notes.href = release.html_url;
-            notes.textContent = "Release notes";
-            slot.appendChild(notes);
-          }
         }
       })
       .catch(() => {});
